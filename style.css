@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+body {
+	background-color:#000000;
+}
+body, html {
+	padding:0;
+	margin:0;
+	overflow:hidden;
+}
+#game
+{
+	margin-left: auto;
+	margin-right: auto;
+}
+canvas {
+	position: relative;
+	width:600px;
+	height:450px;
+	image-rendering: optimizeSpeed;
+	cursor:url('images/crosshair.png');
+	padding: 0;
+	margin: 0;
+}
+.loadimg {
+	display:none;
+}
