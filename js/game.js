@@ -48,13 +48,14 @@ function GameEngine() {
 	this.loader = new AssetLoader();
 	this.fpsManager = new FPSManager();
 	this.sound = new SoundManager();
+	this.particles = new ParticleManager();
 	this.started = true;
 	this.level = null;
+	this.input = new InputManager();
 	this.currentLevel = 1;
 	this.inGame = true; //Are we physically in the game level
 	this.mainMenu = new MainMenu(this);
 	this.inMenu = true;
-	this.particles = true;
 	this.loaded = false;
 	this.entities = [];
 }
@@ -181,7 +182,7 @@ GameEngine.prototype.render = function() {
 			this.particles.clean(null);
 		}
 	}
-	handleInteractions();
+	this.input.handleInteractions();
 };
 
 

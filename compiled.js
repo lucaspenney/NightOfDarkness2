@@ -366,13 +366,14 @@ function GameEngine() {
 	this.loader = new AssetLoader();
 	this.fpsManager = new FPSManager();
 	this.sound = new SoundManager();
+	this.particles = new ParticleManager();
 	this.started = true;
 	this.level = null;
+	this.input = new InputManager();
 	this.currentLevel = 1;
 	this.inGame = true; //Are we physically in the game level
 	this.mainMenu = new MainMenu(this);
 	this.inMenu = true;
-	this.particles = true;
 	this.loaded = false;
 	this.entities = [];
 }
@@ -499,7 +500,7 @@ GameEngine.prototype.render = function() {
 			this.particles.clean(null);
 		}
 	}
-	handleInteractions();
+	this.input.handleInteractions();
 };
 
 
@@ -606,12 +607,11 @@ Gun.prototype.drop = function() {
 	this.pickedUp = false;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
-};
-Gun.prototype.fire = function() {
+};Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
 		if (this.clipAmmo > 0 && !this.reloading) {
-			if (this.owner instanceof Player) new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset, mouse.y - Game.screen.yOffset));
+			if (this.owner instanceof Player) new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
 			//else if (this.owner instanceof Npc) new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x, this.owner.target.y));
 			if (this.type == 'shotgun') {
 				var r1 = (Math.random() * 50) - 30;
@@ -619,8 +619,8 @@ Gun.prototype.fire = function() {
 				r1 = 10; //Non-random shotgun bullet distribution
 				r2 = -10;
 				if (this.owner instanceof Player) {
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset + r1, mouse.y - Game.screen.yOffset + r1));
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset + r2, mouse.y - Game.screen.yOffset + r2));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r1, Game.input.mouse.y - Game.screen.yOffset + r1));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r2, Game.input.mouse.y - Game.screen.yOffset + r2));
 				}
 				//else if (this.owner instanceof Npc) {
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r1, this.owner.target.y+r1));
@@ -705,19 +705,11 @@ HordeTrigger.prototype.callHorde = function() {
 	deleteEntity(this); //We're done here
 };//input.js
 
-/* Interactivity */
 
-$(window).load(function() {
-	window.focus();
-	$(window).keydown(function(evt) {
-		keys[evt.keyCode] = true;
-	});
-	$(window).keyup(function(evt) {
-		keys[evt.keyCode] = false;
-	});
-});
-
-var keys = [];
+function InputManager() {
+	this.mouse = new Mouse();
+	this.keys = [];
+}
 
 function Mouse() {
 	this.x = 0;
@@ -725,79 +717,74 @@ function Mouse() {
 	this.down = false;
 }
 
-var mouse = new Mouse();
+InputManager.prototype.handleInteractions = function() {
+	if (Game.player === null) return;
+	if (this.keys[38] || this.keys[87]) { //Up arrow
+		Game.player.move(0, -2);
+	}
+	if (this.keys[37] || this.keys[65]) { //Left Arrow
+		Game.player.move(-2, 0);
+	}
+	if (this.keys[39] || this.keys[68]) { //right arrow
+		Game.player.move(2, 0);
+	}
+	if (this.keys[40] || this.keys[83]) { //down arrow
+		Game.player.move(0, 2);
+	}
+	if (this.keys[32]) { //spacebar
+		//
+	}
+	if (this.keys[69]) { //e
+		Game.player.use();
+	}
+	if (this.keys[70]) {
+		Game.player.toggleFlashlight();
+	}
+	if (this.keys[71]) {
+		Game.player.drop();
+	}
+	if (this.keys[82]) {
+		Game.player.reloadWeapon();
+	}
+};
+
+$(window).load(function() {
+	window.focus();
+	$(window).keydown(function(evt) {
+		Game.input.keys[evt.keyCode] = true;
+	});
+	$(window).keyup(function(evt) {
+		Game.input.keys[evt.keyCode] = false;
+	});
+});
+
 //Disable browsers usual function of scrolling with up/down arrow keys
 document.onkeydown = function(event) {
 	return event.keyCode != 38 && event.keyCode != 40 && event.keyCode != 32;
 };
 
-
-
-function handleKeyDown(evt) {
-	keys[evt.keyCode] = true;
-}
-
-function handleKeyUp(evt) {
-	keys[evt.keyCode] = false;
-}
 $('#canvas').bind('contextmenu', function(e) {
-	rightClick(e);
+	//Right click callback
 	return false; //Disable usual context menu behaviour
 });
 $("#canvas").mousedown(function(event) {
 	event.preventDefault();
-	mouse.down = true;
+	Game.input.mouse.down = true;
 });
 $("#canvas").mouseup(function(event) {
-	mouse.down = false;
+	Game.input.mouse.down = false;
 });
-//Function for key bindings
-function handleInteractions() {
-	if (Game.player === null) return;
-	if (keys[38] || keys[87]) { //Up arrow
-		Game.player.move(0, -2);
-	}
-	if (keys[37] || keys[65]) { //Left Arrow
-		Game.player.move(-2, 0);
-	}
-	if (keys[39] || keys[68]) { //right arrow
-		Game.player.move(2, 0);
-	}
-	if (keys[40] || keys[83]) { //down arrow
-		Game.player.move(0, 2);
-	}
-	if (keys[32]) { //spacebar
-		//
-	}
-	if (keys[69]) { //e
-		Game.player.use();
-	}
-	if (keys[70]) {
-		Game.player.toggleFlashlight();
-	}
-	if (keys[71]) {
-		Game.player.drop();
-	}
-	if (keys[82]) {
-		Game.player.reloadWeapon();
-	}
-
-}
 
 //Mouse movement
 $('#canvas').mousemove(function(e) {
-	mouse.x = e.pageX - this.offsetLeft,
-	mouse.y = e.pageY - this.offsetTop;
+	Game.input.mouse.x = e.pageX - this.offsetLeft;
+	Game.input.mouse.y = e.pageY - this.offsetTop;
 	if (Game === null) return;
 	if (Game.screen !== null) {
 		//mouse.x += screen.xOffset;
 		//mouse.y += screen.yOffset;
 	}
 });
-
-function rightClick(e) {
-
-}
 
 //Mouse clicks hook
 $("#canvas").click(function(e) {
@@ -1215,7 +1202,7 @@ MainMenu.prototype.update = function() {
 MainMenu.prototype.handleInput = function() {
 	for (var i = 0; i < this.screens[this.currentScreen].buttons.length; i++) {
 		if (this.screens[this.currentScreen].buttons[i] instanceof MenuButton || this.screens[this.currentScreen].buttons[i] instanceof MenuSettingButton) {
-			if (this.screens[this.currentScreen].buttons[i].boundingBox.isPointIn(mouse.x, mouse.y)) {
+			if (this.screens[this.currentScreen].buttons[i].boundingBox.isPointIn(Game.input.mouse.x, Game.input.mouse.y)) {
 				eval(this.screens[this.currentScreen].buttons[i].func); //Execute the code associated with the menu item.
 			}
 		}
@@ -1436,12 +1423,13 @@ Npc.prototype.move = function() {
 		this.x += this.xv;
 		this.y += this.yv;
 	}
-};
-var particles = [];
+};var particles = [];
 
-//YAY PARTICLES!!!!!!!!!!!!!!!!!11!!!!one!!!!1!!
+function ParticleManager() {
 
-function Particle(x,y,r,g,b,angle,speed,friction,alpha,decay, lifetime) {
+}
+
+function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime) {
 	this.x = x;
 	this.y = y;
 	this.lifeTime = lifetime;
@@ -1457,7 +1445,7 @@ function Particle(x,y,r,g,b,angle,speed,friction,alpha,decay, lifetime) {
 	this.alpha = alpha;
 	this.decay = decay;
 	while (this.coordinateCount--) {
-		this.coordinates.push([this.x,this.y]);
+		this.coordinates.push([this.x, this.y]);
 	}
 	particles.push(this);
 }
@@ -1469,20 +1457,20 @@ Particle.prototype.render = function() {
 	//ctx.moveTo( this.coordinates[ this.coordinates.length - 1 ][ 0 ], this.coordinates[ this.coordinates.length - 1 ][ 1 ] );
 	//ctx.lineTo( this.x+screen.xOffset, this.y+screen.yOffset );
 	ctx.fillStyle = "#B21";
-	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha  + ');';
+	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ');';
 
 	//ctx.beginPath();
 	//ctx.arc(this.x+screen.xOffset,this.y+screen.yOffset, 9, 0, 2 * Math.PI, false);
-	ctx.fillRect(this.x+screen.xOffset,this.y+screen.yOffset, 2,2);
+	ctx.fillRect(this.x + screen.xOffset, this.y + screen.yOffset, 2, 2);
 	//ctx.fill();
 };
 
 Particle.prototype.update = function() {
 	if (!game.particles) return;
 	this.coordinates.pop();
-	this.coordinates.unshift( [ this.x, this.y ] );
-	this.x += Math.cos( this.angle ) * this.speed;
-	this.y += Math.sin( this.angle ) * this.speed;
+	this.coordinates.unshift([this.x, this.y]);
+	this.x += Math.cos(this.angle) * this.speed;
+	this.y += Math.sin(this.angle) * this.speed;
 	this.alpha *= this.decay;
 	this.speed *= this.friction;
 	this.timeAlive++;
@@ -1491,10 +1479,10 @@ Particle.prototype.update = function() {
 	}
 };
 
-function createBloodParticles(x,y) {
+function createBloodParticles(x, y) {
 	var particleCount = Math.floor((Math.random() * 25)) + 5;
-	while( particleCount-- ) {
-		particles.push( new Particle( x,y,122,7,1,random(0, Math.PI * 2),random(0.3,2.5),0.8,0.9, 0.9, 30 ) );
+	while (particleCount--) {
+		particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
 	}
 }
 
@@ -1504,21 +1492,20 @@ function random(low, high) {
 }
 
 function drawParticles() {
-	for (var i=0;i<particles.length;i++) {
+	for (var i = 0; i < particles.length; i++) {
 		particles[i].render();
 		particles[i].update();
 	}
 }
 
 function deleteParticle(p) {
-	for (var i=0;i<particles.length;i++) {
+	for (var i = 0; i < particles.length; i++) {
 		if (particles[i] == p) {
 			particles.splice(i, 1);
 			break;
 		}
 	}
-}
-//player.js
+}//player.js
 
 function Player() {
 	Game.entities.push(this);
@@ -1547,7 +1534,7 @@ function Player() {
 
 Player.prototype.update = function() {
 	this.boundingBox.update(this.x + (this.width / 2) - 18, this.y + (this.height / 2) - 18);
-	if (mouse.down) this.fire();
+	if (Game.input.mouse.down) this.fire();
 	if ((this.lastUpdate - getCurrentMs()) < -0.65) {
 		if (this.flashlight) {
 			this.batteryPower -= 1;
@@ -1566,7 +1553,7 @@ Player.prototype.update = function() {
 };
 
 Player.prototype.render = function() {
-	this.rotation = Math.atan2(this.y + Game.screen.yOffset - (this.height / 2) - mouse.y, this.x + Game.screen.xOffset - (this.width / 2) - mouse.x) * (180 / Math.PI);
+	this.rotation = Math.atan2(this.y + Game.screen.yOffset - (this.height / 2) - Game.input.mouse.y, this.x + Game.screen.xOffset - (this.width / 2) - Game.input.mouse.x) * (180 / Math.PI);
 	if (this.rotation < 0) {
 		this.rotation += 360;
 	}
@@ -1589,7 +1576,7 @@ Player.prototype.render = function() {
 
 Player.prototype.fire = function() {
 	if (this.gun !== null) {
-		if (new Point(this.x, this.y).getDist(new Point(mouse.x - Game.screen.xOffset - Game.screen.xOffset, mouse.y - Game.screen.yOffset - Game.screen.yOffset)) > 30) {
+		if (new Point(this.x, this.y).getDist(new Point(Game.input.mouse.x - Game.screen.xOffset - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset - Game.screen.yOffset)) > 30) {
 			this.gun.fire();
 		}
 	}

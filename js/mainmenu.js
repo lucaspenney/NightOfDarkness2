@@ -46,7 +46,7 @@ MainMenu.prototype.update = function() {
 MainMenu.prototype.handleInput = function() {
 	for (var i = 0; i < this.screens[this.currentScreen].buttons.length; i++) {
 		if (this.screens[this.currentScreen].buttons[i] instanceof MenuButton || this.screens[this.currentScreen].buttons[i] instanceof MenuSettingButton) {
-			if (this.screens[this.currentScreen].buttons[i].boundingBox.isPointIn(mouse.x, mouse.y)) {
+			if (this.screens[this.currentScreen].buttons[i].boundingBox.isPointIn(Game.input.mouse.x, Game.input.mouse.y)) {
 				eval(this.screens[this.currentScreen].buttons[i].func); //Execute the code associated with the menu item.
 			}
 		}

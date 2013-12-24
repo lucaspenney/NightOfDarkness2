@@ -27,7 +27,7 @@ function Player() {
 
 Player.prototype.update = function() {
 	this.boundingBox.update(this.x + (this.width / 2) - 18, this.y + (this.height / 2) - 18);
-	if (mouse.down) this.fire();
+	if (Game.input.mouse.down) this.fire();
 	if ((this.lastUpdate - getCurrentMs()) < -0.65) {
 		if (this.flashlight) {
 			this.batteryPower -= 1;
@@ -46,7 +46,7 @@ Player.prototype.update = function() {
 };
 
 Player.prototype.render = function() {
-	this.rotation = Math.atan2(this.y + Game.screen.yOffset - (this.height / 2) - mouse.y, this.x + Game.screen.xOffset - (this.width / 2) - mouse.x) * (180 / Math.PI);
+	this.rotation = Math.atan2(this.y + Game.screen.yOffset - (this.height / 2) - Game.input.mouse.y, this.x + Game.screen.xOffset - (this.width / 2) - Game.input.mouse.x) * (180 / Math.PI);
 	if (this.rotation < 0) {
 		this.rotation += 360;
 	}
@@ -69,7 +69,7 @@ Player.prototype.render = function() {
 
 Player.prototype.fire = function() {
 	if (this.gun !== null) {
-		if (new Point(this.x, this.y).getDist(new Point(mouse.x - Game.screen.xOffset - Game.screen.xOffset, mouse.y - Game.screen.yOffset - Game.screen.yOffset)) > 30) {
+		if (new Point(this.x, this.y).getDist(new Point(Game.input.mouse.x - Game.screen.xOffset - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset - Game.screen.yOffset)) > 30) {
 			this.gun.fire();
 		}
 	}

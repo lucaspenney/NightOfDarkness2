@@ -76,12 +76,11 @@ Gun.prototype.drop = function() {
 	this.pickedUp = false;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
-};
-Gun.prototype.fire = function() {
+};Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
 		if (this.clipAmmo > 0 && !this.reloading) {
-			if (this.owner instanceof Player) new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset, mouse.y - Game.screen.yOffset));
+			if (this.owner instanceof Player) new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
 			//else if (this.owner instanceof Npc) new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x, this.owner.target.y));
 			if (this.type == 'shotgun') {
 				var r1 = (Math.random() * 50) - 30;
@@ -89,8 +88,8 @@ Gun.prototype.fire = function() {
 				r1 = 10; //Non-random shotgun bullet distribution
 				r2 = -10;
 				if (this.owner instanceof Player) {
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset + r1, mouse.y - Game.screen.yOffset + r1));
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(mouse.x - Game.screen.xOffset + r2, mouse.y - Game.screen.yOffset + r2));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r1, Game.input.mouse.y - Game.screen.yOffset + r1));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r2, Game.input.mouse.y - Game.screen.yOffset + r2));
 				}
 				//else if (this.owner instanceof Npc) {
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r1, this.owner.target.y+r1));
