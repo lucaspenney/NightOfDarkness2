@@ -26,7 +26,10 @@ function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime)
 }
 
 Particle.prototype.render = function() {
-	if (!game.particles) return;
+	if (!Game.settings.particles) return;
+	//TODO: Do not render offscreen particles. An onscreen check may be too costly, perhaps don't create them if offscreen?
+	//Will have to look into the best way to do this. Reducing the number of particles is also a perf optimization possibility
+	//Upper limit on number of particles perhaps?
 	//ctx.beginPath();
 	// move to the last tracked coordinates in the set, then draw a line to the current x and y
 	//ctx.moveTo( this.coordinates[ this.coordinates.length - 1 ][ 0 ], this.coordinates[ this.coordinates.length - 1 ][ 1 ] );

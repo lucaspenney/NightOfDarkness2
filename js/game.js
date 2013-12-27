@@ -1,12 +1,6 @@
 var canvas = null;
 var ctx = null;
 
-var can2 = null;
-var ctx2 = null;
-
-
-//Draw entire buffer onto main canvas: ctx.drawImage(canvasBuffer, 0, 0);
-
 /* Loading */
 
 var Game = null;
@@ -16,13 +10,6 @@ $(document).ready(function() {
 	canvas = document.getElementById('canvas');
 	canvas.width = 600;
 	canvas.height = 450;
-	can2 = document.getElementById('canvas2');
-	if (can2 && can2.getContext) {
-		ctx2 = can2.getContext('2d');
-	}
-
-	can2.width = 600;
-	can2.height = 450;
 
 	//check whether browser supports getting canvas context
 	if (canvas && canvas.getContext) {
@@ -49,6 +36,7 @@ function GameEngine() {
 	this.fpsManager = new FPSManager();
 	this.sound = new SoundManager();
 	this.particles = new ParticleManager();
+	this.lighting = new LightingManager();
 	this.started = true;
 	this.level = null;
 	this.input = new InputManager();
@@ -140,17 +128,12 @@ GameEngine.prototype.render = function() {
 		return; //Don't draw the game if we're not in it yet.
 	}
 	if (this.screen === null || this.screen === undefined) return;
-	// draw stuff
-	this.level.update();
-	ctx.restore();
 
-	this.ui.draw();
-	ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+	ctx.restore();
+	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.save();
-	ctx.beginPath();
-	ctx.arc(this.player.x + Game.screen.xOffset, this.player.y + Game.screen.yOffset, 140, 0, 2 * Math.PI, false);
-	//ctx.clip();
+
 	this.ui.draw();
 	renderLevel(this.level);
 	Game.screen.scroll();
@@ -163,11 +146,9 @@ GameEngine.prototype.render = function() {
 		}
 	}
 	drawParticles();
-	drawLights();
-
-	ctx.drawImage(can2, 0, 0);
-	ctx2.restore();
 	this.player.render();
+
+	this.lighting.render();
 	this.level.drawOverlay();
 	this.ui.draw();
 
@@ -182,6 +163,7 @@ GameEngine.prototype.render = function() {
 			this.particles.clean(null);
 		}
 	}
+	this.level.update();
 	this.input.handleInteractions();
 };
 

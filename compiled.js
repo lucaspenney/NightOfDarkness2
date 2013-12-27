@@ -265,8 +265,10 @@ function Light(x, y) {
 	this.y = y;
 	Game.entities.push(this);
 }
-Light.prototype.render = function() {
+
+Light.prototype.render = function(ctx2) {
 	//Canvas 2 - cut a hole in the darkness with a gradient
+	if (ctx2 === undefined) return;
 	ctx2.save();
 	var radgrad2 = ctx2.createRadialGradient(this.x + Game.screen.xOffset + 16, this.y + Game.screen.yOffset + 16, 20, this.x + Game.screen.xOffset + 16, this.y + Game.screen.yOffset + 16, 70);
 	// radgrad2.addColorStop(0.1, "rgba(150, 20, 0, 0.1)");
@@ -319,12 +321,6 @@ function radToDeg(angle) {
 }var canvas = null;
 var ctx = null;
 
-var can2 = null;
-var ctx2 = null;
-
-
-//Draw entire buffer onto main canvas: ctx.drawImage(canvasBuffer, 0, 0);
-
 /* Loading */
 
 var Game = null;
@@ -334,13 +330,6 @@ $(document).ready(function() {
 	canvas = document.getElementById('canvas');
 	canvas.width = 600;
 	canvas.height = 450;
-	can2 = document.getElementById('canvas2');
-	if (can2 && can2.getContext) {
-		ctx2 = can2.getContext('2d');
-	}
-
-	can2.width = 600;
-	can2.height = 450;
 
 	//check whether browser supports getting canvas context
 	if (canvas && canvas.getContext) {
@@ -367,6 +356,7 @@ function GameEngine() {
 	this.fpsManager = new FPSManager();
 	this.sound = new SoundManager();
 	this.particles = new ParticleManager();
+	this.lighting = new LightingManager();
 	this.started = true;
 	this.level = null;
 	this.input = new InputManager();
@@ -458,17 +448,12 @@ GameEngine.prototype.render = function() {
 		return; //Don't draw the game if we're not in it yet.
 	}
 	if (this.screen === null || this.screen === undefined) return;
-	// draw stuff
-	this.level.update();
-	ctx.restore();
 
-	this.ui.draw();
-	ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+	ctx.restore();
+	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.save();
-	ctx.beginPath();
-	ctx.arc(this.player.x + Game.screen.xOffset, this.player.y + Game.screen.yOffset, 140, 0, 2 * Math.PI, false);
-	//ctx.clip();
+
 	this.ui.draw();
 	renderLevel(this.level);
 	Game.screen.scroll();
@@ -481,11 +466,9 @@ GameEngine.prototype.render = function() {
 		}
 	}
 	drawParticles();
-	drawLights();
-
-	ctx.drawImage(can2, 0, 0);
-	ctx2.restore();
 	this.player.render();
+
+	this.lighting.render();
 	this.level.drawOverlay();
 	this.ui.draw();
 
@@ -500,6 +483,7 @@ GameEngine.prototype.render = function() {
 			this.particles.clean(null);
 		}
 	}
+	this.level.update();
 	this.input.handleInteractions();
 };
 
@@ -1083,41 +1067,69 @@ LevelTransition.prototype.update = function() {
 };var flashlightImg = new Image();
 flashlightImg.src = "images/flashlight.png";
 
-function drawLights() {
-	can2.width = 600;
-	can2.height = 450;
-	ctx2.save();
-	ctx.fillStyle = "#000";
-	var radgrad = ctx2.createRadialGradient(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 20, Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 600);
+
+
+var lightingCanvas = document.createElement('canvas');
+
+function LightingManager() {
+	var _this = this;
+	$(document).ready(function() {
+		lightingCanvas.width = 600;
+		lightingCanvas.height = 450;
+		_this.ctx = lightingCanvas.getContext('2d');
+	});
+	this.ctx = lightingCanvas.getContext('2d');
+	this.fullbright = false;
+	this.filter = null;
+}
+
+LightingManager.prototype.render = function() {
+	if (this.ctx === null || this.ctx === undefined) return	;
+
+	this.ctx.save();
+	this.ctx.fillStyle = "#000";
+	this.ctx.fillRect(0,0,lightingCanvas.width,lightingCanvas.height);
+	this.ctx.fill();
+
+
+	this.ctx.globalCompositeOperation = 'destination-out';
+	var radgrad = this.ctx.createRadialGradient(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 20, Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300);
 	if (Game.player.flashlight) {
-		radgrad.addColorStop(0, "rgba(0, 0, 0, 0.1)");
-		radgrad.addColorStop(0.1, "rgba(0, 0, 0, 0.7)");
-		radgrad.addColorStop(0.32, "rgba(0, 0, 0, 1)");
+		radgrad.addColorStop(0, "rgba(0, 0, 0, 1)");
+		radgrad.addColorStop(0.1, "rgba(0, 0, 0, 0.3)");
+		radgrad.addColorStop(0.32, "rgba(0, 0, 0, 0.1)");
+		radgrad.addColorStop(0.4, "rgba(0, 0, 0, 0.03)");
+		radgrad.addColorStop(0.5, "rgba(0, 0, 0, 0)");
 	} else {
-		radgrad.addColorStop(0, "rgba(0,0,0,0.2)");
-		radgrad.addColorStop(0.05, "rgba(0,0,0,0.75)");
-		radgrad.addColorStop(0.19, "rgba(0, 0, 0, 1)");
+		radgrad.addColorStop(0, "rgba(0, 0, 0, 1)");
+		radgrad.addColorStop(0.1, "rgba(0, 0, 0, 0.3)");
+		radgrad.addColorStop(0.2, "rgba(0, 0, 0, 0.1)");
+		radgrad.addColorStop(0.3, "rgba(0, 0, 0, 0)");
 	}
-	ctx2.fillStyle = radgrad;
-	ctx2.beginPath();
-	ctx2.arc(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 650, 0, 2 * Math.PI, false);
-	ctx2.fill();
-	ctx2.globalCompositeOperation = 'destination-out';
+	this.ctx.fillStyle = radgrad;
+	this.ctx.beginPath();
+	this.ctx.arc(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300, 0, 2 * Math.PI, false);
+	this.ctx.fill();
+	
 	if (Game.player.flashlight) {
-		ctx2.save();
-		ctx2.translate(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset);
-		ctx2.rotate(degToRad(Game.player.rotation + 180));
-		ctx2.drawImage(flashlightImg, -40, 0, flashlightImg.width, flashlightImg.height);
-		ctx2.restore();
+		this.ctx.save();
+		this.ctx.translate(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset);
+		this.ctx.rotate(degToRad(Game.player.rotation + 180));
+		this.ctx.globalCompositeOperation = 'destination-out';
+		this.ctx.drawImage(flashlightImg, -40, 0, flashlightImg.width, flashlightImg.height);
+		this.ctx.restore();
 	}
+
 	for (var i = 0; i < Game.entities.length; i++) {
 		if (Game.entities[i] instanceof Light) {
-			Game.entities[i].render();
+			Game.entities[i].render(this.ctx);
 			Game.entities[i].update();
 		}
 	}
-	//ctx2.fillRect(50,50,100,100); //TODO: Draw other lights in here. 
-}function AssetLoader() {
+	ctx.drawImage(lightingCanvas, 0, 0);
+	this.ctx.restore();
+};
+function AssetLoader() {
 	//this.callback = callback;
 	this.assets = [
 		"images/mainmenu.png",
@@ -1451,7 +1463,10 @@ function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime)
 }
 
 Particle.prototype.render = function() {
-	if (!game.particles) return;
+	if (!Game.settings.particles) return;
+	//TODO: Do not render offscreen particles. An onscreen check may be too costly, perhaps don't create them if offscreen?
+	//Will have to look into the best way to do this. Reducing the number of particles is also a perf optimization possibility
+	//Upper limit on number of particles perhaps?
 	//ctx.beginPath();
 	// move to the last tracked coordinates in the set, then draw a line to the current x and y
 	//ctx.moveTo( this.coordinates[ this.coordinates.length - 1 ][ 0 ], this.coordinates[ this.coordinates.length - 1 ][ 1 ] );

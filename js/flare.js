@@ -21,8 +21,10 @@ function Light(x, y) {
 	this.y = y;
 	Game.entities.push(this);
 }
-Light.prototype.render = function() {
+
+Light.prototype.render = function(ctx2) {
 	//Canvas 2 - cut a hole in the darkness with a gradient
+	if (ctx2 === undefined) return;
 	ctx2.save();
 	var radgrad2 = ctx2.createRadialGradient(this.x + Game.screen.xOffset + 16, this.y + Game.screen.yOffset + 16, 20, this.x + Game.screen.xOffset + 16, this.y + Game.screen.yOffset + 16, 70);
 	// radgrad2.addColorStop(0.1, "rgba(150, 20, 0, 0.1)");
