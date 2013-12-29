@@ -37,7 +37,7 @@ function Gun(x, y, type) {
 			{
 				this.fireDelay = 0.6;
 				this.ammo = 30;
-				this.power = 50;
+				this.power = 60;
 				this.clipAmmo = 6;
 				this.clipSize = 6;
 				this.reloadTime = 1.5;
@@ -69,7 +69,7 @@ Gun.prototype.pickUp = function(owner) {
 		this.owner = owner;
 		this.owner.gun = this;
 		this.pickedUp = true;
-		if (game.sound) gunpickup.play();
+		Game.sound.playGunSound(Game.sound.guns.pickup);
 	}
 };
 
@@ -78,7 +78,7 @@ Gun.prototype.reloadGun = function() {
 		if (this.clipAmmo == this.clipSize) return;
 		if (this.ammo === 0 && this.clipAmmo === 0) return;
 		this.reloading = true;
-		if (game.sound) gunreload.play();
+		Game.sound.playGunSound(Game.sound.guns.reload);
 		this.lastReload = getCurrentMs();
 	}
 };
@@ -89,6 +89,7 @@ Gun.prototype.drop = function() {
 	this.pickedUp = false;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
+	Game.sound.playGunSound(Game.sound.guns.drop);
 };
 Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
@@ -109,11 +110,11 @@ Gun.prototype.fire = function() {
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r1, this.owner.target.y+r1));
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r2, this.owner.target.y+r2));
 				//}
-				if (game.sound) gunshot_shotgun.play();
+				Game.sound.playGunSound(Game.sound.guns.shotgun);
 			} else if (this.type == 'pistol') {
-				if (game.sound) gunshot_pistol.play();
+				Game.sound.playGunSound(Game.sound.guns.pistol);
 			} else if (this.type == 'smg') {
-				if (game.sound) gunshot_smg.play();
+				Game.sound.playGunSound(Game.sound.guns.smg);
 			}
 			this.clipAmmo--;
 			this.lastFire = getCurrentMs();

@@ -5,40 +5,46 @@
 function SoundManager() {
 	this.zombieSounds = [];
 	this.hurtSounds = [];
-	this.gunSounds = []; //Todo: move gun sounds into this array, currently they are below
+	this.gunSounds = [];
 
 	this.totalAssets = 29;
-
-	console.log(this.hurtSound);
+	this.guns = {
+		pistol: 0,
+		shotgun: 1,
+		smg: 2,
+		machinegun: 3,
+		pickup: 4,
+		drop: 5,
+		reload: 6
+	};
 
 	if (AudioFX.supported) {
-		//var shufflesound = AudioFX('sounds/cardshuffle', { formats: ['wav'], pool:2 });
-		var gunshot_pistol = AudioFX('sounds/gunshot3', {
+		this.gunSounds[this.guns.pistol] = AudioFX('sounds/gunshot3', {
 			formats: ['wav'],
 			pool: 8,
 			volume: 0.3
 		});
-		var gunshot_shotgun = AudioFX('sounds/gunshot2', {
+		this.gunSounds[this.guns.shotgun] = AudioFX('sounds/gunshot2', {
 			formats: ['wav'],
 			pool: 8,
 			volume: 0.3
 		});
-		var gunshot_smg = AudioFX('sounds/gunshot4', {
+		this.gunSounds[this.guns.smg] = AudioFX('sounds/gunshot4', {
 			formats: ['wav'],
 			pool: 12,
 			volume: 0.1
 		});
-		var gunpickup = AudioFX('sounds/gun_pickup', {
+		this.gunSounds[this.guns.pickup] = AudioFX('sounds/gun_pickup', {
 			formats: ['wav'],
 			pool: 2,
 			volume: 0.5
 		});
-		var gundrop = AudioFX('sounds/gun_drop', {
+		this.gunSounds[this.guns.drop] = AudioFX('sounds/gun_drop', {
 			formats: ['wav'],
 			pool: 2,
 			volume: 0.5
 		});
-		var gunreload = AudioFX('sounds/gun_reload', {
+		this.gunSounds[this.guns.reload] = AudioFX('sounds/gun_reload', {
 			formats: ['wav'],
 			pool: 3,
 			volume: 0.5
@@ -51,7 +57,6 @@ function SoundManager() {
 		});
 		this.load();
 	} else console.log("Browser does not support AudioFX (likely html5 audio unsupported)");
-
 }
 
 SoundManager.prototype.load = function() {
@@ -77,23 +82,29 @@ SoundManager.prototype.load = function() {
 	setTimeout("Game.loader.assetsLoaded +=" + this.totalAssets, 300);
 };
 
-function playZombieSound(hurt) {
-	if (!game.sound) return;
+SoundManager.prototype.playZombieSound = function(hurt) {
+	if (!Game.settings.sound) return;
 	var rand;
 	if (hurt) {
 		rand = Math.floor(Math.random() * 14);
-		if (zombieSounds[rand] !== undefined) zombieSounds[rand].play();
+		if (this.zombieSounds[rand] !== undefined) this.zombieSounds[rand].play();
 	} else {
 		rand = Math.floor(Math.random() * 13) + 14;
 	}
-	if (zombieSounds[rand] !== undefined) {
-		if (zombieSounds[rand] !== undefined) zombieSounds[rand].play();
+	if (this.zombieSounds[rand] !== undefined) {
+		if (this.zombieSounds[rand] !== undefined) this.zombieSounds[rand].play();
 	}
-}
+};
 
-function playHurtSound() {
+SoundManager.prototype.playHurtSound = function() {
+	if (!Game.settings.sound) return;
 	var rand;
 	rand = Math.floor(Math.random() * 3) + 1;
 	if (Game.sound.hurtSounds[rand] !== undefined)
 		Game.sound.hurtSounds[rand].play();
-}
+};
+
+SoundManager.prototype.playGunSound = function(num) {
+	if (!Game.settings.sound) return;
+	this.gunSounds[num].play();
+};

@@ -93,7 +93,7 @@ Player.prototype.toggleFlashlight = function() {
 };
 
 Player.prototype.takeDamage = function(amount) {
-	playHurtSound();
+	Game.sound.playHurtSound();
 	Game.particles.createBloodParticles(this.x, this.y);
 	this.health -= amount;
 	if (this.health <= 0) {

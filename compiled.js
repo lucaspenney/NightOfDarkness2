@@ -462,7 +462,7 @@ GameEngine.prototype.render = function() {
 	this.ui.draw();
 	renderLevel(this.level);
 	Game.screen.scroll();
-	this.entities.sort(sortByLayer);
+	this.entities.sort(sortByEntityLayer);
 	for (var i = 0; i < this.entities.length; i++) {
 		if (this.entities[i] !== null) {
 			if (!(this.entities[i] instanceof Player)) this.entities[i].render();
@@ -497,7 +497,7 @@ GameEngine.prototype.debugMsg = function(str) {
 };
 
 
-function sortByLayer(a, b) {
+function sortByEntityLayer(a, b) {
 	if (a === null) return 1;
 	if (b === null) return -1;
 	if (a.layer === undefined) a.layer = 0;
@@ -556,7 +556,7 @@ function deleteEntity(e) {
 			{
 				this.fireDelay = 0.6;
 				this.ammo = 30;
-				this.power = 50;
+				this.power = 60;
 				this.clipAmmo = 6;
 				this.clipSize = 6;
 				this.reloadTime = 1.5;
@@ -588,7 +588,7 @@ Gun.prototype.pickUp = function(owner) {
 		this.owner = owner;
 		this.owner.gun = this;
 		this.pickedUp = true;
-		if (game.sound) gunpickup.play();
+		Game.sound.playGunSound(Game.sound.guns.pickup);
 	}
 };
 
@@ -597,7 +597,7 @@ Gun.prototype.reloadGun = function() {
 		if (this.clipAmmo == this.clipSize) return;
 		if (this.ammo === 0 && this.clipAmmo === 0) return;
 		this.reloading = true;
-		if (game.sound) gunreload.play();
+		Game.sound.playGunSound(Game.sound.guns.reload);
 		this.lastReload = getCurrentMs();
 	}
 };
@@ -608,6 +608,7 @@ Gun.prototype.drop = function() {
 	this.pickedUp = false;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
+	Game.sound.playGunSound(Game.sound.guns.drop);
 };
 Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
@@ -628,11 +629,11 @@ Gun.prototype.fire = function() {
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r1, this.owner.target.y+r1));
 				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r2, this.owner.target.y+r2));
 				//}
-				if (game.sound) gunshot_shotgun.play();
+				Game.sound.playGunSound(Game.sound.guns.shotgun);
 			} else if (this.type == 'pistol') {
-				if (game.sound) gunshot_pistol.play();
+				Game.sound.playGunSound(Game.sound.guns.pistol);
 			} else if (this.type == 'smg') {
-				if (game.sound) gunshot_smg.play();
+				Game.sound.playGunSound(Game.sound.guns.smg);
 			}
 			this.clipAmmo--;
 			this.lastFire = getCurrentMs();
@@ -1082,12 +1083,7 @@ LevelTransition.prototype.update = function() {
 		setTimeout("game.changeLevel();", 4000);
 		deleteEntity(this);
 	}
-};var flashlightImg = new Image();
-flashlightImg.src = "images/flashlight.png";
-
-
-
-var lightingCanvas = document.createElement('canvas');
+};var lightingCanvas = document.createElement('canvas');
 
 function LightingManager() {
 	var _this = this;
@@ -1099,14 +1095,15 @@ function LightingManager() {
 	this.ctx = lightingCanvas.getContext('2d');
 	this.fullbright = false;
 	this.filter = null;
+	this.flashlightSprite = new Sprite("images/flashlight.png");
 }
 
 LightingManager.prototype.render = function() {
-	if (this.ctx === null || this.ctx === undefined) return	;
+	if (this.ctx === null || this.ctx === undefined) return;
 
 	this.ctx.save();
 	this.ctx.fillStyle = "#000";
-	this.ctx.fillRect(0,0,lightingCanvas.width,lightingCanvas.height);
+	this.ctx.fillRect(0, 0, lightingCanvas.width, lightingCanvas.height);
 	this.ctx.fill();
 
 
@@ -1128,13 +1125,13 @@ LightingManager.prototype.render = function() {
 	this.ctx.beginPath();
 	this.ctx.arc(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300, 0, 2 * Math.PI, false);
 	this.ctx.fill();
-	
+
 	if (Game.player.flashlight) {
 		this.ctx.save();
 		this.ctx.translate(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset);
 		this.ctx.rotate(degToRad(Game.player.rotation + 180));
 		this.ctx.globalCompositeOperation = 'destination-out';
-		this.ctx.drawImage(flashlightImg, -40, 0, flashlightImg.width, flashlightImg.height);
+		this.ctx.drawImage(this.flashlightSprite.img, -40, 0, this.flashlightSprite.img.width, this.flashlightSprite.img.height);
 		this.ctx.restore();
 	}
 
@@ -1146,8 +1143,7 @@ LightingManager.prototype.render = function() {
 	}
 	ctx.drawImage(lightingCanvas, 0, 0);
 	this.ctx.restore();
-};
-function AssetLoader() {
+};function AssetLoader() {
 	//this.callback = callback;
 	this.assets = [
 		"images/mainmenu.png",
@@ -1627,7 +1623,7 @@ Player.prototype.toggleFlashlight = function() {
 };
 
 Player.prototype.takeDamage = function(amount) {
-	playHurtSound();
+	Game.sound.playHurtSound();
 	Game.particles.createBloodParticles(this.x, this.y);
 	this.health -= amount;
 	if (this.health <= 0) {
@@ -1767,40 +1763,46 @@ Settings.prototype.toggle = function(str) {
 function SoundManager() {
 	this.zombieSounds = [];
 	this.hurtSounds = [];
-	this.gunSounds = []; //Todo: move gun sounds into this array, currently they are below
+	this.gunSounds = [];
 
 	this.totalAssets = 29;
-
-	console.log(this.hurtSound);
+	this.guns = {
+		pistol: 0,
+		shotgun: 1,
+		smg: 2,
+		machinegun: 3,
+		pickup: 4,
+		drop: 5,
+		reload: 6
+	};
 
 	if (AudioFX.supported) {
-		//var shufflesound = AudioFX('sounds/cardshuffle', { formats: ['wav'], pool:2 });
-		var gunshot_pistol = AudioFX('sounds/gunshot3', {
+		this.gunSounds[this.guns.pistol] = AudioFX('sounds/gunshot3', {
 			formats: ['wav'],
 			pool: 8,
 			volume: 0.3
 		});
-		var gunshot_shotgun = AudioFX('sounds/gunshot2', {
+		this.gunSounds[this.guns.shotgun] = AudioFX('sounds/gunshot2', {
 			formats: ['wav'],
 			pool: 8,
 			volume: 0.3
 		});
-		var gunshot_smg = AudioFX('sounds/gunshot4', {
+		this.gunSounds[this.guns.smg] = AudioFX('sounds/gunshot4', {
 			formats: ['wav'],
 			pool: 12,
 			volume: 0.1
 		});
-		var gunpickup = AudioFX('sounds/gun_pickup', {
+		this.gunSounds[this.guns.pickup] = AudioFX('sounds/gun_pickup', {
 			formats: ['wav'],
 			pool: 2,
 			volume: 0.5
 		});
-		var gundrop = AudioFX('sounds/gun_drop', {
+		this.gunSounds[this.guns.drop] = AudioFX('sounds/gun_drop', {
 			formats: ['wav'],
 			pool: 2,
 			volume: 0.5
 		});
-		var gunreload = AudioFX('sounds/gun_reload', {
+		this.gunSounds[this.guns.reload] = AudioFX('sounds/gun_reload', {
 			formats: ['wav'],
 			pool: 3,
 			volume: 0.5
@@ -1813,7 +1815,6 @@ function SoundManager() {
 		});
 		this.load();
 	} else console.log("Browser does not support AudioFX (likely html5 audio unsupported)");
-
 }
 
 SoundManager.prototype.load = function() {
@@ -1839,26 +1840,32 @@ SoundManager.prototype.load = function() {
 	setTimeout("Game.loader.assetsLoaded +=" + this.totalAssets, 300);
 };
 
-function playZombieSound(hurt) {
-	if (!game.sound) return;
+SoundManager.prototype.playZombieSound = function(hurt) {
+	if (!Game.settings.sound) return;
 	var rand;
 	if (hurt) {
 		rand = Math.floor(Math.random() * 14);
-		if (zombieSounds[rand] !== undefined) zombieSounds[rand].play();
+		if (this.zombieSounds[rand] !== undefined) this.zombieSounds[rand].play();
 	} else {
 		rand = Math.floor(Math.random() * 13) + 14;
 	}
-	if (zombieSounds[rand] !== undefined) {
-		if (zombieSounds[rand] !== undefined) zombieSounds[rand].play();
+	if (this.zombieSounds[rand] !== undefined) {
+		if (this.zombieSounds[rand] !== undefined) this.zombieSounds[rand].play();
 	}
-}
+};
 
-function playHurtSound() {
+SoundManager.prototype.playHurtSound = function() {
+	if (!Game.settings.sound) return;
 	var rand;
 	rand = Math.floor(Math.random() * 3) + 1;
 	if (Game.sound.hurtSounds[rand] !== undefined)
 		Game.sound.hurtSounds[rand].play();
-}function Sprite(img) {
+};
+
+SoundManager.prototype.playGunSound = function(num) {
+	if (!Game.settings.sound) return;
+	this.gunSounds[num].play();
+};function Sprite(img) {
 	this.img = new Image();
 	this.img.src = img;
 	this.scale = 1;
@@ -2301,7 +2308,7 @@ Zombie.prototype.move = function() {
 	if (getCurrentMs() - this.lastUpdate > 2.5) {
 		var distToPlayer = new Point(this.x, this.y).getDist(new Point(Game.player.x, Game.player.y));
 		if (distToPlayer < 90 && Math.random() * 10 < 7) {
-			playZombieSound(false);
+			Game.sound.playZombieSound(false);
 			this.lastUpdate = getCurrentMs();
 		}
 	}
@@ -2426,7 +2433,7 @@ Zombie.prototype.hurt = function() {
 		this.layer = 0;
 		this.boundingBox.setHeight(0);
 		this.boundingBox.setWidth(0);
-		playZombieSound(true);
+		Game.sound.playZombieSound(true);
 	}
 };function ZombieSpawner(x, y) {
 	this.x = x;

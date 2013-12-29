@@ -1,8 +1,3 @@
-var flashlightImg = new Image();
-flashlightImg.src = "images/flashlight.png";
-
-
-
 var lightingCanvas = document.createElement('canvas');
 
 function LightingManager() {
@@ -15,14 +10,15 @@ function LightingManager() {
 	this.ctx = lightingCanvas.getContext('2d');
 	this.fullbright = false;
 	this.filter = null;
+	this.flashlightSprite = new Sprite("images/flashlight.png");
 }
 
 LightingManager.prototype.render = function() {
-	if (this.ctx === null || this.ctx === undefined) return	;
+	if (this.ctx === null || this.ctx === undefined) return;
 
 	this.ctx.save();
 	this.ctx.fillStyle = "#000";
-	this.ctx.fillRect(0,0,lightingCanvas.width,lightingCanvas.height);
+	this.ctx.fillRect(0, 0, lightingCanvas.width, lightingCanvas.height);
 	this.ctx.fill();
 
 
@@ -44,13 +40,13 @@ LightingManager.prototype.render = function() {
 	this.ctx.beginPath();
 	this.ctx.arc(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300, 0, 2 * Math.PI, false);
 	this.ctx.fill();
-	
+
 	if (Game.player.flashlight) {
 		this.ctx.save();
 		this.ctx.translate(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset);
 		this.ctx.rotate(degToRad(Game.player.rotation + 180));
 		this.ctx.globalCompositeOperation = 'destination-out';
-		this.ctx.drawImage(flashlightImg, -40, 0, flashlightImg.width, flashlightImg.height);
+		this.ctx.drawImage(this.flashlightSprite.img, -40, 0, this.flashlightSprite.img.width, this.flashlightSprite.img.height);
 		this.ctx.restore();
 	}
 

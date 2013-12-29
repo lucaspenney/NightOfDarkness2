@@ -137,7 +137,7 @@ GameEngine.prototype.render = function() {
 	this.ui.draw();
 	renderLevel(this.level);
 	Game.screen.scroll();
-	this.entities.sort(sortByLayer);
+	this.entities.sort(sortByEntityLayer);
 	for (var i = 0; i < this.entities.length; i++) {
 		if (this.entities[i] !== null) {
 			if (!(this.entities[i] instanceof Player)) this.entities[i].render();
@@ -172,7 +172,7 @@ GameEngine.prototype.debugMsg = function(str) {
 };
 
 
-function sortByLayer(a, b) {
+function sortByEntityLayer(a, b) {
 	if (a === null) return 1;
 	if (b === null) return -1;
 	if (a.layer === undefined) a.layer = 0;

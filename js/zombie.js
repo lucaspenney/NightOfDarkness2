@@ -50,7 +50,7 @@ Zombie.prototype.move = function() {
 	if (getCurrentMs() - this.lastUpdate > 2.5) {
 		var distToPlayer = new Point(this.x, this.y).getDist(new Point(Game.player.x, Game.player.y));
 		if (distToPlayer < 90 && Math.random() * 10 < 7) {
-			playZombieSound(false);
+			Game.sound.playZombieSound(false);
 			this.lastUpdate = getCurrentMs();
 		}
 	}
@@ -175,6 +175,6 @@ Zombie.prototype.hurt = function() {
 		this.layer = 0;
 		this.boundingBox.setHeight(0);
 		this.boundingBox.setWidth(0);
-		playZombieSound(true);
+		Game.sound.playZombieSound(true);
 	}
 };
