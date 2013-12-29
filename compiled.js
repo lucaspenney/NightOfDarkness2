@@ -564,9 +564,22 @@ function deleteEntity(e) {
 				this.img.src = 'images/shotgun2.png';
 				break;
 			}
+		case 'machinegun':
+			{
+				this.fireDelay = 0.1;
+				this.ammo = 100;
+				this.power = 20;
+				this.clipAmmo = 100;
+				this.clipSize = 100;
+				this.reloadTime = 1.8;
+				this.displayName = "Machine Gun";
+				this.img.src = 'images/machinegun.png';
+				break;
+			}
 	}
 	this.boundingBox = new BoundingBox(this.x, this.y, 10, 10);
 	this.dropTime = 0;
+
 	Game.entities.push(this);
 }
 
@@ -595,7 +608,8 @@ Gun.prototype.drop = function() {
 	this.pickedUp = false;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
-};Gun.prototype.fire = function() {
+};
+Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
 		if (this.clipAmmo > 0 && !this.reloading) {
