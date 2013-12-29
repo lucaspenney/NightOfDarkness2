@@ -167,7 +167,7 @@ Zombie.prototype.update = function() {
 Zombie.prototype.hurt = function() {
 	this.health -= 10;
 	this.target = new Point(Game.player.x, Game.player.y);
-	createBloodParticles(this.x, this.y);
+	Game.particles.createBloodParticles(this.x, this.y);
 	if (this.health <= 0) {
 		this.isDying = true;
 		this.deathRotation = this.rotation;

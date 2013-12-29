@@ -292,17 +292,17 @@ Light.prototype.update = function() {
 }//functions.js
 
 Function.prototype.inherit = function(parent) {
-  this.prototype = Object.create(parent.prototype);
+	this.prototype = Object.create(parent.prototype);
 };
 
 Array.prototype.clean = function(deleteValue) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == deleteValue) {         
-      this.splice(i, 1);
-      i--;
-    }
-  }
-  //return this;
+	for (var i = 0; i < this.length; i++) {
+		if (this[i] == deleteValue) {
+			this.splice(i, 1);
+			i--;
+		}
+	}
+	//return this;
 };
 
 
@@ -313,11 +313,16 @@ function getCurrentMs() {
 }
 
 function degToRad(angle) {
-  return ((angle*Math.PI) / 180);
+	return ((angle * Math.PI) / 180);
 }
 
 function radToDeg(angle) {
-  return ((angle*180) / Math.PI);
+	return ((angle * 180) / Math.PI);
+}
+
+function random(low, high) {
+	var rand = (Math.random() * high) + low;
+	return rand;
 }var canvas = null;
 var ctx = null;
 
@@ -458,14 +463,13 @@ GameEngine.prototype.render = function() {
 	renderLevel(this.level);
 	Game.screen.scroll();
 	this.entities.sort(sortByLayer);
-
 	for (var i = 0; i < this.entities.length; i++) {
 		if (this.entities[i] !== null) {
 			if (!(this.entities[i] instanceof Player)) this.entities[i].render();
 			if (this.inGame) this.entities[i].update();
 		}
 	}
-	drawParticles();
+	this.particles.drawParticles();
 	this.player.render();
 
 	this.lighting.render();
@@ -1435,11 +1439,34 @@ Npc.prototype.move = function() {
 		this.x += this.xv;
 		this.y += this.yv;
 	}
-};var particles = [];
-
-function ParticleManager() {
-
+};function ParticleManager() {
+	this.particles = [];
 }
+
+ParticleManager.prototype.drawParticles = function() {
+	for (var i = 0; i < this.particles.length; i++) {
+		this.particles[i].render();
+		this.particles[i].update();
+	}
+};
+
+ParticleManager.prototype.deleteParticle = function(p) {
+	for (var i = 0; i < this.particles.length; i++) {
+		if (this.particles[i] == p) {
+			this.particles.splice(i, 1);
+			break;
+		}
+	}
+};
+
+ParticleManager.prototype.createBloodParticles = function(x, y) {
+	var particleCount = Math.floor((Math.random() * 25)) + 5;
+	while (particleCount--) {
+		this.particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
+	}
+};
+
+/* Particle Object */
 
 function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime) {
 	this.x = x;
@@ -1459,7 +1486,7 @@ function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime)
 	while (this.coordinateCount--) {
 		this.coordinates.push([this.x, this.y]);
 	}
-	particles.push(this);
+	Game.particles.particles.push(this);
 }
 
 Particle.prototype.render = function() {
@@ -1473,15 +1500,14 @@ Particle.prototype.render = function() {
 	//ctx.lineTo( this.x+screen.xOffset, this.y+screen.yOffset );
 	ctx.fillStyle = "#B21";
 	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ');';
-
 	//ctx.beginPath();
 	//ctx.arc(this.x+screen.xOffset,this.y+screen.yOffset, 9, 0, 2 * Math.PI, false);
-	ctx.fillRect(this.x + screen.xOffset, this.y + screen.yOffset, 2, 2);
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 	//ctx.fill();
 };
 
 Particle.prototype.update = function() {
-	if (!game.particles) return;
+	if (!Game.settings.particles) return;
 	this.coordinates.pop();
 	this.coordinates.unshift([this.x, this.y]);
 	this.x += Math.cos(this.angle) * this.speed;
@@ -1490,37 +1516,9 @@ Particle.prototype.update = function() {
 	this.speed *= this.friction;
 	this.timeAlive++;
 	if (this.timeAlive >= this.lifeTime) {
-		deleteParticle(this);
+		Game.particles.deleteParticle(this);
 	}
-};
-
-function createBloodParticles(x, y) {
-	var particleCount = Math.floor((Math.random() * 25)) + 5;
-	while (particleCount--) {
-		particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
-	}
-}
-
-function random(low, high) {
-	var rand = (Math.random() * high) + low;
-	return rand;
-}
-
-function drawParticles() {
-	for (var i = 0; i < particles.length; i++) {
-		particles[i].render();
-		particles[i].update();
-	}
-}
-
-function deleteParticle(p) {
-	for (var i = 0; i < particles.length; i++) {
-		if (particles[i] == p) {
-			particles.splice(i, 1);
-			break;
-		}
-	}
-}//player.js
+};//player.js
 
 function Player() {
 	Game.entities.push(this);
@@ -1615,9 +1613,8 @@ Player.prototype.toggleFlashlight = function() {
 };
 
 Player.prototype.takeDamage = function(amount) {
-	Game.sound.hurtSound.play();
 	playHurtSound();
-	createBloodParticles(this.x, this.y);
+	Game.particles.createBloodParticles(this.x, this.y);
 	this.health -= amount;
 	if (this.health <= 0) {
 		this.health = 0;
@@ -1760,12 +1757,6 @@ function SoundManager() {
 
 	this.totalAssets = 29;
 
-	this.hurtSound = AudioFX('sounds/hurt_1', {
-		formats: ['wav'],
-		pool: 1,
-		volume: 0.9
-	});
-
 	console.log(this.hurtSound);
 
 	if (AudioFX.supported) {
@@ -1851,7 +1842,8 @@ function playZombieSound(hurt) {
 function playHurtSound() {
 	var rand;
 	rand = Math.floor(Math.random() * 3) + 1;
-	Game.sound.hurtSounds[rand].play();
+	if (Game.sound.hurtSounds[rand] !== undefined)
+		Game.sound.hurtSounds[rand].play();
 }function Sprite(img) {
 	this.img = new Image();
 	this.img.src = img;
@@ -2412,7 +2404,7 @@ Zombie.prototype.update = function() {
 Zombie.prototype.hurt = function() {
 	this.health -= 10;
 	this.target = new Point(Game.player.x, Game.player.y);
-	createBloodParticles(this.x, this.y);
+	Game.particles.createBloodParticles(this.x, this.y);
 	if (this.health <= 0) {
 		this.isDying = true;
 		this.deathRotation = this.rotation;

@@ -9,12 +9,6 @@ function SoundManager() {
 
 	this.totalAssets = 29;
 
-	this.hurtSound = AudioFX('sounds/hurt_1', {
-		formats: ['wav'],
-		pool: 1,
-		volume: 0.9
-	});
-
 	console.log(this.hurtSound);
 
 	if (AudioFX.supported) {
@@ -100,5 +94,6 @@ function playZombieSound(hurt) {
 function playHurtSound() {
 	var rand;
 	rand = Math.floor(Math.random() * 3) + 1;
-	Game.sound.hurtSounds[rand].play();
+	if (Game.sound.hurtSounds[rand] !== undefined)
+		Game.sound.hurtSounds[rand].play();
 }

@@ -138,14 +138,13 @@ GameEngine.prototype.render = function() {
 	renderLevel(this.level);
 	Game.screen.scroll();
 	this.entities.sort(sortByLayer);
-
 	for (var i = 0; i < this.entities.length; i++) {
 		if (this.entities[i] !== null) {
 			if (!(this.entities[i] instanceof Player)) this.entities[i].render();
 			if (this.inGame) this.entities[i].update();
 		}
 	}
-	drawParticles();
+	this.particles.drawParticles();
 	this.player.render();
 
 	this.lighting.render();

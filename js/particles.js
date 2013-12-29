@@ -1,8 +1,31 @@
-var particles = [];
-
 function ParticleManager() {
-
+	this.particles = [];
 }
+
+ParticleManager.prototype.drawParticles = function() {
+	for (var i = 0; i < this.particles.length; i++) {
+		this.particles[i].render();
+		this.particles[i].update();
+	}
+};
+
+ParticleManager.prototype.deleteParticle = function(p) {
+	for (var i = 0; i < this.particles.length; i++) {
+		if (this.particles[i] == p) {
+			this.particles.splice(i, 1);
+			break;
+		}
+	}
+};
+
+ParticleManager.prototype.createBloodParticles = function(x, y) {
+	var particleCount = Math.floor((Math.random() * 25)) + 5;
+	while (particleCount--) {
+		this.particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
+	}
+};
+
+/* Particle Object */
 
 function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime) {
 	this.x = x;
@@ -22,7 +45,7 @@ function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime)
 	while (this.coordinateCount--) {
 		this.coordinates.push([this.x, this.y]);
 	}
-	particles.push(this);
+	Game.particles.particles.push(this);
 }
 
 Particle.prototype.render = function() {
@@ -36,15 +59,14 @@ Particle.prototype.render = function() {
 	//ctx.lineTo( this.x+screen.xOffset, this.y+screen.yOffset );
 	ctx.fillStyle = "#B21";
 	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ');';
-
 	//ctx.beginPath();
 	//ctx.arc(this.x+screen.xOffset,this.y+screen.yOffset, 9, 0, 2 * Math.PI, false);
-	ctx.fillRect(this.x + screen.xOffset, this.y + screen.yOffset, 2, 2);
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 	//ctx.fill();
 };
 
 Particle.prototype.update = function() {
-	if (!game.particles) return;
+	if (!Game.settings.particles) return;
 	this.coordinates.pop();
 	this.coordinates.unshift([this.x, this.y]);
 	this.x += Math.cos(this.angle) * this.speed;
@@ -53,34 +75,6 @@ Particle.prototype.update = function() {
 	this.speed *= this.friction;
 	this.timeAlive++;
 	if (this.timeAlive >= this.lifeTime) {
-		deleteParticle(this);
+		Game.particles.deleteParticle(this);
 	}
 };
-
-function createBloodParticles(x, y) {
-	var particleCount = Math.floor((Math.random() * 25)) + 5;
-	while (particleCount--) {
-		particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
-	}
-}
-
-function random(low, high) {
-	var rand = (Math.random() * high) + low;
-	return rand;
-}
-
-function drawParticles() {
-	for (var i = 0; i < particles.length; i++) {
-		particles[i].render();
-		particles[i].update();
-	}
-}
-
-function deleteParticle(p) {
-	for (var i = 0; i < particles.length; i++) {
-		if (particles[i] == p) {
-			particles.splice(i, 1);
-			break;
-		}
-	}
-}
