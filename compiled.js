@@ -166,8 +166,9 @@ BoundingBox.prototype.destroy = function() {
 	this.gun = gun;
 	this.x = x;
 	this.y = y;
+	this.lastPos = new Point(this.x, this.y);
 	this.target = target;
-	this.speed = 6;
+	this.speed = 8;
 	this.xv = (target.x - this.x) * this.speed;
 	this.yv = (target.y - this.y) * this.speed;
 	this.xv /= this.target.getDist(new Point(this.x, this.y));
@@ -205,9 +206,14 @@ Bullet.prototype.render = function() {
 		ctx.drawImage(muzzleFlash, -40, (-(this.gun.owner.height / 2)), muzzleFlash.width, muzzleFlash.height);
 		ctx.restore();
 	} else {
-		ctx.fillStyle = "#CCC";
+		ctx.strokeStyle = "rgba(180,180,180,0.9)";
+		//ctx.beginPath();
+		//ctx.arc(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 1, 0, 2 * Math.PI, false);
 		ctx.beginPath();
-		ctx.arc(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 1, 0, 2 * Math.PI, false);
+		ctx.moveTo(this.lastPos.x + Game.screen.xOffset, this.lastPos.y + Game.screen.yOffset);
+		ctx.lineTo(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset);
+		ctx.closePath();
+		ctx.stroke();
 		ctx.fill();
 	}
 };
@@ -238,6 +244,8 @@ Bullet.prototype.update = function() {
 			}
 		}
 	}
+	this.lastPos.x = this.x;
+	this.lastPos.y = this.y;
 	if (canMove) {
 		this.x += this.xv;
 		this.y += this.yv;
