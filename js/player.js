@@ -51,8 +51,11 @@ Player.prototype.render = function() {
 		this.rotation += 360;
 	}
 	this.rotation -= 90;
-	this.sprite.rotation = this.rotation;
+	this.sprite.rotation = this.rotation + 2;
 	this.sprite.renderOnScreen(this.x, this.y);
+
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 
 	if (this.gun === null) this.sprite.xOffset = 0;
 	else if (this.gun !== null) {

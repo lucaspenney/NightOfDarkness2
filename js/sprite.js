@@ -13,6 +13,8 @@ function Sprite(img) {
 	this.rotation = 0;
 	this.alpha = 1;
 	this.fadeAmount = 0;
+	this.rotationXOffset = 0;
+	this.rotationYOffset = 0;
 	var _this = this;
 	this.img.onload = function() {
 		_this.loaded = true;
@@ -48,16 +50,12 @@ Sprite.prototype.drawImage = function(x, y) {
 			this.alpha = 0;
 		}
 	}
-	if (this.rotation === 0) {
-		ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, x, y, this.frameWidth * this.scale, this.frameWidth * this.scale);
-	} else {
-		ctx.save();
-		ctx.translate(x, y);
-		ctx.rotate(degToRad(this.rotation));
-		ctx.globalAlpha = this.alpha;
-		ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameWidth * this.scale);
-		ctx.restore();
-	}
+	ctx.save();
+	ctx.translate(x + this.rotationXOffset, y + this.rotationYOffset);
+	ctx.rotate(degToRad(this.rotation));
+	ctx.globalAlpha = this.alpha;
+	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameWidth * this.scale);
+	ctx.restore();
 };
 
 Sprite.prototype.fadeOut = function(callback) {

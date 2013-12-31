@@ -616,7 +616,13 @@ Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
 		if (this.clipAmmo > 0 && !this.reloading) {
-			if (this.owner instanceof Player) new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
+			var x = 6,
+				y = 1;
+			var x2 = x * Math.cos(degToRad(this.owner.rotation)) + y * Math.sin(degToRad(this.owner.rotation));
+			var y2 = x * Math.sin(degToRad(this.owner.rotation)) - y * Math.cos(degToRad(this.owner.rotation));
+			x2 /= 2;
+			y2 /= 2;
+			if (this.owner instanceof Player) new Bullet(this, this.owner.x + x2, this.owner.y + y2, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
 			//else if (this.owner instanceof Npc) new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x, this.owner.target.y));
 			if (this.type == 'shotgun') {
 				var r1 = (Math.random() * 50) - 30;
@@ -1582,8 +1588,11 @@ Player.prototype.render = function() {
 		this.rotation += 360;
 	}
 	this.rotation -= 90;
-	this.sprite.rotation = this.rotation;
+	this.sprite.rotation = this.rotation + 2;
 	this.sprite.renderOnScreen(this.x, this.y);
+
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 
 	if (this.gun === null) this.sprite.xOffset = 0;
 	else if (this.gun !== null) {
@@ -1881,6 +1890,8 @@ SoundManager.prototype.playGunSound = function(num) {
 	this.rotation = 0;
 	this.alpha = 1;
 	this.fadeAmount = 0;
+	this.rotationXOffset = 0;
+	this.rotationYOffset = 0;
 	var _this = this;
 	this.img.onload = function() {
 		_this.loaded = true;
@@ -1900,7 +1911,6 @@ Sprite.prototype.renderOnScreen = function(x, y) {
 			this.drawImage(x + Game.screen.xOffset, y + Game.screen.yOffset);
 		}
 	}
-	//this.drawImage(x + Game.screen.xOffset, y + Game.screen.yOffset);
 };
 
 Sprite.prototype.drawImage = function(x, y) {
@@ -1917,16 +1927,12 @@ Sprite.prototype.drawImage = function(x, y) {
 			this.alpha = 0;
 		}
 	}
-	if (this.rotation === 0) {
-		ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, x, y, this.frameWidth * this.scale, this.frameWidth * this.scale);
-	} else {
-		ctx.save();
-		ctx.translate(x, y);
-		ctx.rotate(degToRad(this.rotation));
-		ctx.globalAlpha = this.alpha;
-		ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameWidth * this.scale);
-		ctx.restore();
-	}
+	ctx.save();
+	ctx.translate(x + this.rotationXOffset, y + this.rotationYOffset);
+	ctx.rotate(degToRad(this.rotation));
+	ctx.globalAlpha = this.alpha;
+	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameWidth * this.scale);
+	ctx.restore();
 };
 
 Sprite.prototype.fadeOut = function(callback) {
@@ -1954,14 +1960,11 @@ Tile.prototype.setColor = function(color) {
 };
 
 Tile.prototype.render = function() {
-	//if (new Point(this.x,this.y).getDist(new Point(player.x,player.y)) < 550) {
-
 	var xOffset = ((this.id - 1) % 4) * 32;
 	var yOffset = Math.floor(((this.id - 1) / 4)) * 32;
 	ctx.fillStyle = this.color;
 	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 32, 32);
 	ctx.drawImage(tileSheet, xOffset, yOffset, 32, 32, this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 32, 32);
-	//}
 };
 
 function isSolidTile(x, y) {
