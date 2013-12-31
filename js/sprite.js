@@ -25,13 +25,13 @@ Sprite.prototype.render = function(x, y) {
 	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.width, this.height, x, y, this.width * this.scale, this.width * this.scale);
 };
 Sprite.prototype.renderOnScreen = function(x, y) {
+	if (!this.loaded) return;
 	//Check if the entity is on Game.screen, and draw if so
 	if (x + Game.screen.xOffset < Game.screen.width && x + Game.screen.xOffset > 0) {
 		if (y + Game.screen.yOffset < Game.screen.height && y + Game.screen.yOffset > 0) {
 			this.drawImage(x + Game.screen.xOffset, y + Game.screen.yOffset);
 		}
 	}
-	//this.drawImage(x + Game.screen.xOffset, y + Game.screen.yOffset);
 };
 
 Sprite.prototype.drawImage = function(x, y) {

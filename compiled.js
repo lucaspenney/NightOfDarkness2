@@ -229,7 +229,7 @@ Bullet.prototype.update = function() {
 		if (Game.entities[i] instanceof Zombie) {
 			if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.entities[i])) {
 				Game.entities[i].hurt(this.power);
-				deleteEntity(this);
+				Game.deleteEntity(this);
 			}
 		}
 	}
@@ -239,7 +239,7 @@ Bullet.prototype.update = function() {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.level.tiles[x][y])) {
 					canMove = false;
-					deleteEntity(this);
+					Game.deleteEntity(this);
 				}
 			}
 		}
@@ -358,10 +358,6 @@ $(document).ready(function() {
 	Game.loop();
 });
 
-$(window).load(function() {
-	//setTimeout("Game.loaded=true;Game.inMenu=true", 6000);
-});
-
 function GameEngine() {
 	this.settings = new Settings();
 	this.ui = new UI();
@@ -411,9 +407,9 @@ GameEngine.prototype.end = function() {
 GameEngine.prototype.changeLevel = function() {
 	this.inGame = false;
 	//Clear the entities array - Keep the player and player objects.
-	for (var i = 0; i < entities.length; i++) {
-		if (entities[i] !== player && entities[i] !== player.gun) {
-			deleteEntity(this);
+	for (var i = 0; i < Game.entities.length; i++) {
+		if (Game.entities[i] !== Game.player && Game.entities[i] !== Game.player.gun) {
+			Game.deleteEntity(this);
 		}
 	}
 	this.currentLevel++;
@@ -463,7 +459,7 @@ GameEngine.prototype.render = function() {
 	if (this.screen === null || this.screen === undefined) return;
 
 	ctx.restore();
-	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+	ctx.fillStyle = "rgba(0, 0, 0)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.save();
 
@@ -499,6 +495,14 @@ GameEngine.prototype.render = function() {
 	this.input.handleInteractions();
 };
 
+GameEngine.prototype.deleteEntity = function(e) {
+	for (var i = 0; i < this.entities.length; i++) {
+		if (this.entities[i] === e) {
+			this.entities[i] = null;
+			break;
+		}
+	}
+};
 
 GameEngine.prototype.debugMsg = function(str) {
 	console.log("LuluEngine: " + str);
@@ -515,16 +519,6 @@ function sortByEntityLayer(a, b) {
 	if (a.layer > b.layer)
 		return 1;
 	return 0;
-}
-
-function deleteEntity(e) {
-	for (var i = 0; i < Game.entities.length; i++) {
-		if (Game.entities[i] === e) {
-			Game.entities[i] = null; //For now this works. Potentially making arrays very large though, which is bad perf.
-			//Game.entities.splice(i,1);
-			break;
-		}
-	}
 }function Gun(x, y, type) {
 	this.x = x;
 	this.y = y;
@@ -846,8 +840,7 @@ Item.prototype.pickUp = function() {
 			}
 		case 'ammopack':
 			{
-				if (Game.player.gun instanceof Gun)
-					Game.player.gun.ammo += Game.player.gun.clipSize * 4;
+				if (Game.player.gun instanceof Gun) Game.player.gun.ammo += Game.player.gun.clipSize * 4;
 				break;
 			}
 		case 'batterypack':
@@ -862,7 +855,7 @@ Item.prototype.pickUp = function() {
 				break;
 			}
 	}
-	deleteEntity(this);
+	Game.deleteEntity(this);
 };
 
 Item.prototype.render = function() {
@@ -1695,7 +1688,7 @@ PlayerSpawn.prototype.update = function() {
 			Game.player.x = this.x + 16;
 			Game.player.y = this.y + 16;
 		}
-		deleteEntity(this);
+		Game.deleteEntity(this);
 	}
 };//point.js
 
@@ -1900,6 +1893,7 @@ Sprite.prototype.render = function(x, y) {
 	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.width, this.height, x, y, this.width * this.scale, this.width * this.scale);
 };
 Sprite.prototype.renderOnScreen = function(x, y) {
+	if (!this.loaded) return;
 	//Check if the entity is on Game.screen, and draw if so
 	if (x + Game.screen.xOffset < Game.screen.width && x + Game.screen.xOffset > 0) {
 		if (y + Game.screen.yOffset < Game.screen.height && y + Game.screen.yOffset > 0) {
@@ -1943,17 +1937,14 @@ Sprite.prototype.fadeOut = function(callback) {
 Sprite.prototype.fadeIn = function(callback) {
 	this.onFadeIn = callback;
 	this.fadeAmount = 0.05;
-};//tile.js
-
-var r=0,g=0,b=0;
-var tileSheet = new Image();
+};var tileSheet = new Image();
 tileSheet.src = "images/tilesheet.png";
 
 function Tile(x, y, id) {
 	this.x = x;
 	this.y = y;
 	this.id = id;
-	this.boundingBox = new BoundingBox(this.x,this.y,32,32);
+	this.boundingBox = new BoundingBox(this.x, this.y, 32, 32);
 	this.color = '#060';
 	if (this.id <= 16) this.solid = true;
 }
@@ -1973,13 +1964,12 @@ Tile.prototype.render = function() {
 	//}
 };
 
-function isSolidTile(x,y) {
-	if (game.level.tiles[x][y] === undefined) return;
-	if (game.level.tiles[x][y] === null) return;
-	if (game.level.tiles[x][y].solid) return true;
+function isSolidTile(x, y) {
+	if (Game.level.tiles[x][y] === undefined) return;
+	if (Game.level.tiles[x][y] === null) return;
+	if (Game.level.tiles[x][y].solid) return true;
 	else return false;
-}
-/**
+}/**
  * tmx-loader.js  - A Javascript loader for the TMX File Format.
  *
  * 	Currenty Supports: 
@@ -2423,7 +2413,7 @@ Zombie.prototype.update = function() {
 		this.deathTime++;
 		if (this.deathTime > 25) {
 			Game.player.kills++;
-			deleteEntity(this);
+			Game.deleteEntity(this);
 		}
 		return;
 	}

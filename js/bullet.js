@@ -65,7 +65,7 @@ Bullet.prototype.update = function() {
 		if (Game.entities[i] instanceof Zombie) {
 			if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.entities[i])) {
 				Game.entities[i].hurt(this.power);
-				deleteEntity(this);
+				Game.deleteEntity(this);
 			}
 		}
 	}
@@ -75,7 +75,7 @@ Bullet.prototype.update = function() {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.level.tiles[x][y])) {
 					canMove = false;
-					deleteEntity(this);
+					Game.deleteEntity(this);
 				}
 			}
 		}

@@ -8,11 +8,6 @@ body, html {
 	margin:0;
 	overflow:hidden;
 }
-#game
-{
-	margin-left: auto;
-	margin-right: auto;
-}
 canvas {
 	position: relative;
 	width:600px;

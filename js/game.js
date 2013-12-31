@@ -25,10 +25,6 @@ $(document).ready(function() {
 	Game.loop();
 });
 
-$(window).load(function() {
-	//setTimeout("Game.loaded=true;Game.inMenu=true", 6000);
-});
-
 function GameEngine() {
 	this.settings = new Settings();
 	this.ui = new UI();
@@ -78,9 +74,9 @@ GameEngine.prototype.end = function() {
 GameEngine.prototype.changeLevel = function() {
 	this.inGame = false;
 	//Clear the entities array - Keep the player and player objects.
-	for (var i = 0; i < entities.length; i++) {
-		if (entities[i] !== player && entities[i] !== player.gun) {
-			deleteEntity(this);
+	for (var i = 0; i < Game.entities.length; i++) {
+		if (Game.entities[i] !== Game.player && Game.entities[i] !== Game.player.gun) {
+			Game.deleteEntity(this);
 		}
 	}
 	this.currentLevel++;
@@ -130,7 +126,7 @@ GameEngine.prototype.render = function() {
 	if (this.screen === null || this.screen === undefined) return;
 
 	ctx.restore();
-	ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+	ctx.fillStyle = "rgba(0, 0, 0)";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.save();
 
@@ -166,6 +162,14 @@ GameEngine.prototype.render = function() {
 	this.input.handleInteractions();
 };
 
+GameEngine.prototype.deleteEntity = function(e) {
+	for (var i = 0; i < this.entities.length; i++) {
+		if (this.entities[i] === e) {
+			this.entities[i] = null;
+			break;
+		}
+	}
+};
 
 GameEngine.prototype.debugMsg = function(str) {
 	console.log("LuluEngine: " + str);
@@ -182,14 +186,4 @@ function sortByEntityLayer(a, b) {
 	if (a.layer > b.layer)
 		return 1;
 	return 0;
-}
-
-function deleteEntity(e) {
-	for (var i = 0; i < Game.entities.length; i++) {
-		if (Game.entities[i] === e) {
-			Game.entities[i] = null; //For now this works. Potentially making arrays very large though, which is bad perf.
-			//Game.entities.splice(i,1);
-			break;
-		}
-	}
 }

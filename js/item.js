@@ -43,8 +43,7 @@ Item.prototype.pickUp = function() {
 			}
 		case 'ammopack':
 			{
-				if (Game.player.gun instanceof Gun)
-					Game.player.gun.ammo += Game.player.gun.clipSize * 4;
+				if (Game.player.gun instanceof Gun) Game.player.gun.ammo += Game.player.gun.clipSize * 4;
 				break;
 			}
 		case 'batterypack':
@@ -59,7 +58,7 @@ Item.prototype.pickUp = function() {
 				break;
 			}
 	}
-	deleteEntity(this);
+	Game.deleteEntity(this);
 };
 
 Item.prototype.render = function() {

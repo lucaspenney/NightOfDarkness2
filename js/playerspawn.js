@@ -14,6 +14,6 @@ PlayerSpawn.prototype.update = function() {
 			Game.player.x = this.x + 16;
 			Game.player.y = this.y + 16;
 		}
-		deleteEntity(this);
+		Game.deleteEntity(this);
 	}
 };
