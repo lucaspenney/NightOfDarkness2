@@ -51,7 +51,7 @@ Player.prototype.render = function() {
 		this.rotation += 360;
 	}
 	this.rotation -= 90;
-	this.sprite.rotation = this.rotation + 2;
+	this.sprite.rotation = this.rotation;
 	this.sprite.renderOnScreen(this.x, this.y);
 
 	ctx.fillStyle = "#FFFFFF";

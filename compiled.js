@@ -1588,7 +1588,7 @@ Player.prototype.render = function() {
 		this.rotation += 360;
 	}
 	this.rotation -= 90;
-	this.sprite.rotation = this.rotation + 2;
+	this.sprite.rotation = this.rotation;
 	this.sprite.renderOnScreen(this.x, this.y);
 
 	ctx.fillStyle = "#FFFFFF";
@@ -2164,6 +2164,7 @@ function UI() {
 	this.gameOver = false;
 	this.gameOverImg = new Image();
 	this.gameOverImg.src = "images/gameover2.png";
+	this.loadingPercent = 0;
 }
 
 UI.prototype.draw = function() {
@@ -2185,6 +2186,7 @@ UI.prototype.draw = function() {
 };
 
 UI.prototype.drawLoadingScreen = function() {
+	this.loadingPercent += (Game.loader.getLoadPercent() - this.loadingPercent) * 0.1;
 	ctx.fillStyle = "#000";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	//ctx.fillText(this.alert, canvas.width/2,canvas.height/4);
@@ -2192,7 +2194,7 @@ UI.prototype.drawLoadingScreen = function() {
 	ctx.fillStyle = "#FFF";
 	ctx.font = 'normal 20px arial';
 	ctx.fillText("Loading...", canvas.width / 2, canvas.height / 4);
-	ctx.fillRect(100, canvas.height / 3, Game.loader.getLoadPercent() * 3, 30);
+	ctx.fillRect(100, canvas.height / 3, this.loadingPercent * 3, 30);
 	ctx.fillText(Math.floor(Game.loader.getLoadPercent()) + "%", canvas.width / 2, canvas.height / 2);
 };
 
