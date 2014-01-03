@@ -18,7 +18,7 @@ function Gun(x, y, type) {
 				this.clipSize = 15;
 				this.reloadTime = 1.3;
 				this.displayName = "Pistol";
-				this.img.src = 'images/pistol3.png';
+				this.img.src = 'images/pistol.png';
 				break;
 			}
 		case 'smg':
@@ -30,7 +30,7 @@ function Gun(x, y, type) {
 				this.clipSize = 40;
 				this.reloadTime = 1.4;
 				this.displayName = "SMG";
-				this.img.src = 'images/smg3.png';
+				this.img.src = 'images/smg.png';
 				break;
 			}
 		case 'shotgun':
@@ -42,7 +42,7 @@ function Gun(x, y, type) {
 				this.clipSize = 6;
 				this.reloadTime = 1.5;
 				this.displayName = "Shotgun";
-				this.img.src = 'images/shotgun2.png';
+				this.img.src = 'images/shotgun.png';
 				break;
 			}
 		case 'machinegun':
@@ -55,6 +55,18 @@ function Gun(x, y, type) {
 				this.reloadTime = 1.8;
 				this.displayName = "Machine Gun";
 				this.img.src = 'images/machinegun.png';
+				break;
+			}
+		case 'revolver':
+			{
+				this.fireDelay = 0.5;
+				this.ammo = 6;
+				this.power = 50;
+				this.clipAmmo = 6;
+				this.clipSize = 6;
+				this.reloadTime = 1.8;
+				this.displayName = "Revolver";
+				this.img.src = 'images/revolver.png';
 				break;
 			}
 	}
