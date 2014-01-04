@@ -48,6 +48,12 @@ function Level(num) {
 				case 7:
 					new Gun(x * 32 + 16, y * 32 + 16, 'shotgun');
 					break;
+				case 8:
+					new Gun(x * 32 + 16, y * 32 + 16, 'revolver');
+					break;
+				case 9:
+					new Gun(x * 32 + 16, y * 32 + 16, 'machinegun');
+					break;
 				case 13:
 					new Item(x * 32 + 16, y * 32 + 16, 'ammopack');
 					break;

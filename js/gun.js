@@ -133,6 +133,10 @@ Gun.prototype.fire = function() {
 				Game.sound.playGunSound(Game.sound.guns.pistol);
 			} else if (this.type == 'smg') {
 				Game.sound.playGunSound(Game.sound.guns.smg);
+			} else if (this.type == 'revolver') {
+				Game.sound.playGunSound(Game.sound.guns.revolver);
+			} else if (this.type == 'machinegun') {
+				Game.sound.playGunSound(Game.sound.guns.machinegun);
 			}
 			this.clipAmmo--;
 			this.lastFire = getCurrentMs();

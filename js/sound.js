@@ -12,10 +12,11 @@ function SoundManager() {
 		pistol: 0,
 		shotgun: 1,
 		smg: 2,
-		machinegun: 3,
-		pickup: 4,
-		drop: 5,
-		reload: 6
+		revolver: 3,
+		machinegun: 4,
+		pickup: 5,
+		drop: 6,
+		reload: 7
 	};
 
 	if (AudioFX.supported) {
@@ -27,6 +28,16 @@ function SoundManager() {
 		this.gunSounds[this.guns.shotgun] = AudioFX('sounds/gunshot2', {
 			formats: ['wav'],
 			pool: 8,
+			volume: 0.3
+		});
+		this.gunSounds[this.guns.revolver] = AudioFX('sounds/gunshot3', {
+			formats: ['wav'],
+			pool: 8,
+			volume: 0.3
+		});
+		this.gunSounds[this.guns.machinegun] = AudioFX('sounds/gunshot3', {
+			formats: ['wav'],
+			pool: 30,
 			volume: 0.3
 		});
 		this.gunSounds[this.guns.smg] = AudioFX('sounds/gunshot4', {
