@@ -88,8 +88,8 @@ UI.prototype.drawInventory = function() {
 };
 
 UI.prototype.drawGun = function(x, y) {
-	ctx.textAlign = 'left';
-	ctx.font = 'normal 16pt Calibri';
+	ctx.textAlign = 'center';
+	ctx.font = 'normal 16pt Courier New';
 	ctx.fillStyle = "#FFF";
 
 	var gunname;
@@ -107,8 +107,8 @@ UI.prototype.drawGun = function(x, y) {
 		gunclipammo = 0;
 		gunclipmax = 0;
 	}
-	ctx.fillText(gunname, x + 10, y + 10);
-	ctx.fillText(gunclipammo + "/" + gunammo, x + 50, y - 40);
+	ctx.fillText(gunname, x + 65, y + 10);
+	ctx.fillText(gunclipammo + "/" + gunammo, x + 60, y - 40);
 
 	try {
 		Game.player.gun.sprite.scale = 2;

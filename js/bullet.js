@@ -9,22 +9,6 @@ function Bullet(gun, x, y, power, target) {
 	this.yv = (target.y - this.y) * this.speed;
 	this.xv /= this.target.getDist(new Point(this.x, this.y));
 	this.yv /= this.target.getDist(new Point(this.x, this.y));
-	this.xv *= 1.5;
-	this.yv *= 1.5;
-	//Some changes to starting position to make bullets come out of gun. Hacky but it works. 
-	if (this.xv > 1 && this.yv > 1) {
-		this.x -= 5;
-		this.y += 5;
-	} else if (this.xv < 1 && this.yv > 1) {
-		this.x -= 5;
-		this.y -= 5;
-	} else if (this.xv < 0 && this.yv < 0) {
-		this.x += 5;
-		this.y -= 5;
-	} else if (this.xv > 0 && this.yv < 0) {
-		this.x += 5;
-		this.y += 5;
-	}
 	this.boundingBox = new BoundingBox(this.x, this.y, 3, 3);
 	this.rotation = 0;
 	this.scale = 0;

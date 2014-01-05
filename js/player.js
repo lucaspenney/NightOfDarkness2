@@ -53,6 +53,10 @@ Player.prototype.render = function() {
 	}
 	this.rotation -= 90;
 	this.sprite.rotation = this.rotation;
+	if (this.sprite.rotation > -30 && this.sprite.rotation < 90) {
+		this.sprite.rotation -= 5;
+	}
+	console.log(this.sprite.rotation);
 	this.sprite.renderOnScreen(this.x, this.y);
 
 	ctx.fillStyle = "#FFFFFF";

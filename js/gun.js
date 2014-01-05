@@ -109,11 +109,9 @@ Gun.prototype.fire = function() {
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
 		if (this.clipAmmo > 0 && !this.reloading) {
 			var x = 6,
-				y = 1;
+				y = 2;
 			var x2 = x * Math.cos(degToRad(this.owner.rotation)) + y * Math.sin(degToRad(this.owner.rotation));
 			var y2 = x * Math.sin(degToRad(this.owner.rotation)) - y * Math.cos(degToRad(this.owner.rotation));
-			x2 /= 2;
-			y2 /= 2;
 			if (this.owner instanceof Player) new Bullet(this, this.owner.x + x2, this.owner.y + y2, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
 			//else if (this.owner instanceof Npc) new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x, this.owner.target.y));
 			if (this.type == 'shotgun') {
