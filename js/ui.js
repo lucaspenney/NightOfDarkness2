@@ -21,7 +21,7 @@ UI.prototype.draw = function() {
 
 	this.drawStats(3, 15);
 
-	this.drawGun(460, 430);
+	this.drawGun(460, 435);
 
 	this.drawHealth(210, 440);
 
@@ -112,7 +112,7 @@ UI.prototype.drawGun = function(x, y) {
 
 	try {
 		Game.player.gun.sprite.scale = 2;
-		Game.player.gun.sprite.drawImage(x + 50, y - 10);
+		Game.player.gun.sprite.drawImage(x + 50, y - 25);
 		Game.player.gun.sprite.scale = 1;
 	} catch (e) {}
 };

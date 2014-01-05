@@ -5,6 +5,7 @@ function Gun(x, y, type) {
 	this.pickedUp = false;
 	this.lastFire = 0;
 	this.img = new Image();
+	this.sprite = null;
 	this.displayName = "";
 	this.lastReload = 0;
 	this.owner = null;
@@ -18,7 +19,7 @@ function Gun(x, y, type) {
 				this.clipSize = 15;
 				this.reloadTime = 1.3;
 				this.displayName = "Pistol";
-				this.img.src = 'images/pistol.png';
+				this.sprite = new Sprite('images/pistol.png', true);
 				break;
 			}
 		case 'smg':
@@ -30,7 +31,7 @@ function Gun(x, y, type) {
 				this.clipSize = 40;
 				this.reloadTime = 1.4;
 				this.displayName = "SMG";
-				this.img.src = 'images/smg.png';
+				this.sprite = new Sprite('images/smg.png', true);
 				break;
 			}
 		case 'shotgun':
@@ -42,7 +43,7 @@ function Gun(x, y, type) {
 				this.clipSize = 6;
 				this.reloadTime = 1.5;
 				this.displayName = "Shotgun";
-				this.img.src = 'images/shotgun.png';
+				this.sprite = new Sprite('images/shotgun.png', true);
 				break;
 			}
 		case 'machinegun':
@@ -54,7 +55,7 @@ function Gun(x, y, type) {
 				this.clipSize = 100;
 				this.reloadTime = 1.8;
 				this.displayName = "Machine Gun";
-				this.img.src = 'images/machinegun.png';
+				this.sprite = new Sprite('images/machinegun.png', true);
 				break;
 			}
 		case 'revolver':
@@ -66,11 +67,11 @@ function Gun(x, y, type) {
 				this.clipSize = 6;
 				this.reloadTime = 1.8;
 				this.displayName = "Revolver";
-				this.img.src = 'images/revolver.png';
+				this.sprite = new Sprite('images/revolver.png', true);
 				break;
 			}
 	}
-	this.boundingBox = new BoundingBox(this.x, this.y, 10, 10);
+	this.boundingBox = new BoundingBox(this.x, this.y, 16, 16);
 	this.dropTime = 0;
 
 	Game.entities.push(this);
@@ -150,7 +151,7 @@ Gun.prototype.fire = function() {
 
 Gun.prototype.render = function() {
 	if (!this.pickedUp) {
-		ctx.drawImage(this.img, this.x + Game.screen.xOffset, this.y + Game.screen.yOffset);
+		this.sprite.renderOnScreen(this.x, this.y);
 	}
 };
 
@@ -183,5 +184,7 @@ Gun.prototype.update = function() {
 			}
 		}
 	}
-	this.boundingBox.update(this.x, this.y);
+	this.boundingBox.update(this.x - (this.sprite.width / 3), this.y);
+	this.boundingBox.setHeight(this.sprite.height / 2);
+	this.boundingBox.setWidth(this.sprite.width / 2);
 };

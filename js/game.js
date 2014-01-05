@@ -17,7 +17,10 @@ $(document).ready(function() {
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		$(window).focus();
-		ctx.webkitImageSmoothingEnabled = false; //For pixel art scaling
+
+		ctx.webkitImageSmoothingEnabled = false;
+		ctx.mozImageSmoothingEnabled = false;
+		ctx.imageSmoothingEnabled = false;
 	}
 	ctx.scale(2, 2);
 

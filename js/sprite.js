@@ -1,4 +1,4 @@
-function Sprite(img, width, height) {
+function Sprite(img, useFullImg) {
 	this.img = new Image();
 	this.img.src = img;
 	this.scale = 1;
@@ -7,8 +7,9 @@ function Sprite(img, width, height) {
 	this.width = 1;
 	this.height = 1;
 	this.rotation = 0;
-	this.frameWidth = width || 16;
-	this.frameHeight = height || 16;
+	this.frameWidth = 16;
+	this.frameHeight = 16;
+	this.useFullImg = useFullImg;
 	this.loaded = false;
 	this.rotation = 0;
 	this.alpha = 1;
@@ -20,6 +21,11 @@ function Sprite(img, width, height) {
 		_this.loaded = true;
 		_this.width = _this.img.width;
 		_this.height = _this.img.height;
+		if (_this.useFullImg) {
+			_this.frameWidth = this.width;
+			_this.frameHeight = this.height;
+			console.log(_this.frameHeight);
+		}
 	};
 }
 
@@ -54,7 +60,7 @@ Sprite.prototype.drawImage = function(x, y) {
 	ctx.translate(x + this.rotationXOffset, y + this.rotationYOffset);
 	ctx.rotate(degToRad(this.rotation));
 	ctx.globalAlpha = this.alpha;
-	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameWidth * this.scale);
+	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.frameWidth, this.frameHeight, -this.frameWidth / 2, -this.frameHeight / 2, this.frameWidth * this.scale, this.frameHeight * this.scale);
 	ctx.restore();
 };
 

@@ -1,13 +1,13 @@
 //boundingbox.js
 
-function BoundingBox(x,y,width,height) {
+function BoundingBox(x, y, width, height) {
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
 }
 
-BoundingBox.prototype.update = function(x,y) {
+BoundingBox.prototype.update = function(x, y) {
 	this.x = x;
 	this.y = y;
 };
@@ -20,7 +20,7 @@ BoundingBox.prototype.setHeight = function(height) {
 	this.height = height;
 };
 
-BoundingBox.prototype.wouldCollide = function(x,y,e) {
+BoundingBox.prototype.wouldCollide = function(x, y, e) {
 	var wouldCollide = false;
 	this.x += x;
 	this.y += y;
@@ -41,17 +41,17 @@ BoundingBox.prototype.isColliding = function(e) {
 };
 
 BoundingBox.prototype.getDistBetween = function(e) {
-	var point1a = this.x + (this.width/2);
-	var point1b = this.y + (this.height/2);
-	var point1 = new Point(point1a,point1b);
-	var point2a = e.boundingBox.x+(e.boundingBox.width/2);
-	var point2b = e.boundingBox.y+(e.boundingBox.height/2);
-	var point2 = new Point(point2a,point2b);
+	var point1a = this.x + (this.width / 2);
+	var point1b = this.y + (this.height / 2);
+	var point1 = new Point(point1a, point1b);
+	var point2a = e.boundingBox.x + (e.boundingBox.width / 2);
+	var point2b = e.boundingBox.y + (e.boundingBox.height / 2);
+	var point2 = new Point(point2a, point2b);
 	return point1.getDist(point2);
 
 }
 
-BoundingBox.prototype.isPointIn = function(x,y) {
+BoundingBox.prototype.isPointIn = function(x, y) {
 	if (this.x === undefined || this.y === undefined || this.x === null || this.y === null) return -1;
 	if (this.x + this.width > x && this.x < x) {
 		if (this.y + this.height > y && this.y < y) {
@@ -59,6 +59,12 @@ BoundingBox.prototype.isPointIn = function(x,y) {
 		}
 	}
 	return false;
+};
+
+BoundingBox.prototype.draw = function() {
+	//For debugging
+	ctx.fillStyle = "#00F";
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, this.width, this.height);
 };
 
 BoundingBox.prototype.destroy = function() {
