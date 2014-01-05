@@ -31,7 +31,7 @@ function Item(x, y, type) {
 	Game.entities.push(this);
 }
 
-Item.prototype.pickUp = function() {
+Item.prototype.use = function() {
 	if (this.type === 'ammopack' && Game.player.gun === null) return;
 	if (this.type === 'batterypack' && Game.player.battery > 96) return;
 	switch (this.type) {
@@ -58,7 +58,12 @@ Item.prototype.pickUp = function() {
 				break;
 			}
 	}
-	Game.deleteEntity(this);
+};
+
+Item.prototype.pickUp = function() {
+	if (Game.player.inventory.addItem(this)) {
+		this.pickedUp = true;
+	}
 };
 
 Item.prototype.render = function() {

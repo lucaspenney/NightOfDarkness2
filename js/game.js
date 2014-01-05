@@ -8,8 +8,8 @@ var Game = null;
 //HTML onLoad event - Loading the game
 $(document).ready(function() {
 	canvas = document.getElementById('canvas');
-	canvas.width = 600;
-	canvas.height = 450;
+	canvas.width = 600 * 2;
+	canvas.height = 450 * 2;
 
 	//check whether browser supports getting canvas context
 	if (canvas && canvas.getContext) {
@@ -17,10 +17,11 @@ $(document).ready(function() {
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 		$(window).focus();
-		//ctx.webkitImageSmoothingEnabled = false; //For pixel art scaling
+		ctx.webkitImageSmoothingEnabled = false; //For pixel art scaling
 	}
+	ctx.scale(2, 2);
 
-	Game = new GameEngine();
+	Game = new GameEngine(600, 450);
 	Game.loader.load();
 	Game.loop();
 });

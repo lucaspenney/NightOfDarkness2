@@ -1,4 +1,4 @@
-function Sprite(img) {
+function Sprite(img, width, height) {
 	this.img = new Image();
 	this.img.src = img;
 	this.scale = 1;
@@ -7,8 +7,8 @@ function Sprite(img) {
 	this.width = 1;
 	this.height = 1;
 	this.rotation = 0;
-	this.frameWidth = 16;
-	this.frameHeight = 16;
+	this.frameWidth = width || 16;
+	this.frameHeight = height || 16;
 	this.loaded = false;
 	this.rotation = 0;
 	this.alpha = 1;

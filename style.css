@@ -7,6 +7,7 @@ body, html {
 	padding:0;
 	margin:0;
 	overflow:hidden;
+	text-align: center;
 }
 canvas {
 	position: relative;
@@ -16,7 +17,4 @@ canvas {
 	cursor:url('images/crosshair.png');
 	padding: 0;
 	margin: 0;
-}
-.loadimg {
-	display:none;
 }

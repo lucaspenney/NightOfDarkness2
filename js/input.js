@@ -41,6 +41,15 @@ InputManager.prototype.handleInteractions = function() {
 	if (this.keys[82]) {
 		Game.player.reloadWeapon();
 	}
+	if (this.keys[49]) { //1
+		Game.player.inventory.selectedItem = 0;
+	}
+	if (this.keys[50]) { //2
+		Game.player.inventory.selectedItem = 1;
+	}
+	if (this.keys[51]) { //3
+		Game.player.inventory.selectedItem = 2;
+	}
 };
 
 $(window).load(function() {

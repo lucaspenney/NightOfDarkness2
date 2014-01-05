@@ -23,6 +23,7 @@ function Player() {
 	this.batteryPower = 100;
 	this.kills = 0;
 	this.gameTime = 0;
+	this.inventory = new Inventory();
 }
 
 Player.prototype.update = function() {
@@ -116,6 +117,7 @@ Player.prototype.drop = function() {
 
 Player.prototype.use = function() {
 	//Interact with environment? Maybe not...
+	this.inventory.useItem(this.inventory.selectedItem);
 };
 
 Player.prototype.move = function(xm, ym) {
