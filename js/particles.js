@@ -19,7 +19,7 @@ ParticleManager.prototype.deleteParticle = function(p) {
 };
 
 ParticleManager.prototype.createBloodParticles = function(x, y) {
-	var particleCount = Math.floor((Math.random() * 25)) + 5;
+	var particleCount = Math.floor((Math.random() * 25)) + 15;
 	while (particleCount--) {
 		this.particles.push(new Particle(x, y, 122, 7, 1, random(0, Math.PI * 2), random(0.3, 2.5), 0.8, 0.9, 0.9, 30));
 	}

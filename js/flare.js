@@ -2,14 +2,13 @@ function Flare(x, y) {
 	this.x = x;
 	this.y = y;
 	this.layer = 0;
-	this.img = new Image();
-	this.img.src = 'images/flare.png';
+	this.sprite = new Sprite("images/flare.png", true);
 	new Light(this.x, this.y);
 	Game.entities.push(this);
 }
 
 Flare.prototype.render = function() {
-	ctx.drawImage(this.img, this.x + screen.xOffset, this.y + screen.yOffset);
+	this.sprite.renderOnScreen(this.x, this.y);
 };
 
 Flare.prototype.update = function() {

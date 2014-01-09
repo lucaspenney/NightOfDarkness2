@@ -169,6 +169,7 @@ Zombie.prototype.hurt = function() {
 	this.target = new Point(Game.player.x, Game.player.y);
 	Game.particles.createBloodParticles(this.x, this.y);
 	if (this.health <= 0) {
+		new Decal(this.x, this.y, 'images/blood.png');
 		this.isDying = true;
 		this.deathRotation = this.rotation;
 		this.sprite.fadeOut();

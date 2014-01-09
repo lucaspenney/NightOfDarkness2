@@ -66,10 +66,10 @@ Sprite.prototype.drawImage = function(x, y) {
 
 Sprite.prototype.fadeOut = function(callback) {
 	this.onFadeOut = callback;
-	this.fadeAmount = -0.05;
+	this.fadeAmount = -0.03;
 };
 
 Sprite.prototype.fadeIn = function(callback) {
 	this.onFadeIn = callback;
-	this.fadeAmount = 0.05;
+	this.fadeAmount = 0.03;
 };
