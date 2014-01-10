@@ -30,7 +30,7 @@ InputManager.prototype.handleInteractions = function() {
 		//
 	}
 	if (this.keys[69]) { //e
-		Game.player.use();
+		Game.player.interact();
 	}
 	if (this.keys[70]) {
 		Game.player.toggleFlashlight();
@@ -42,13 +42,22 @@ InputManager.prototype.handleInteractions = function() {
 		Game.player.reloadWeapon();
 	}
 	if (this.keys[49]) { //1
-		Game.player.inventory.selectedItem = 0;
+		Game.player.inventory.selectItemSlot(1);
 	}
 	if (this.keys[50]) { //2
-		Game.player.inventory.selectedItem = 1;
+		Game.player.inventory.selectItemSlot(2);
 	}
 	if (this.keys[51]) { //3
-		Game.player.inventory.selectedItem = 2;
+		Game.player.inventory.selectItemSlot(3);
+	}
+	if (this.keys[52]) { //4
+		Game.player.inventory.selectItemSlot(4);
+	}
+	if (this.keys[53]) { //5
+		Game.player.inventory.selectItemSlot(5);
+	}
+	if (this.keys[54]) { //6
+		Game.player.inventory.selectItemSlot(6);
 	}
 };
 

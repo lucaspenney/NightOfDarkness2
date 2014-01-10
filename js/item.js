@@ -3,6 +3,7 @@ function Item(x, y, type) {
 	this.y = y;
 	this.type = type;
 	this.pickedUp = false;
+	this.owner = null;
 	this.sprite = new Sprite("images/items.png");
 	switch (type) {
 		case 'healthpack':
@@ -60,8 +61,10 @@ Item.prototype.use = function() {
 	}
 };
 
-Item.prototype.pickUp = function() {
-	if (Game.player.inventory.addItem(this)) {
+Item.prototype.pickUp = function(owner) {
+	if (this.dropTime - getCurrentMs() < -1 && !this.pickedUp) {
+		this.owner = owner;
+		this.owner.inventory.addItem(this);
 		this.pickedUp = true;
 	}
 };
@@ -75,8 +78,17 @@ Item.prototype.render = function() {
 Item.prototype.update = function() {
 	if (!this.pickedUp) {
 		if (this.boundingBox.isColliding(Game.player)) {
-			this.pickUp();
+			this.pickUp(Game.player);
 		}
 	}
 	this.boundingBox.update(this.x, this.y);
+};
+
+Item.prototype.drop = function() {
+	this.x = Game.player.x + (Math.random() * 10) - 10;
+	this.y = Game.player.y + (Math.random() * 10) - 10;
+	this.pickedUp = false;
+	this.sprite.scale = 1;
+	this.dropTime = getCurrentMs();
+	Game.sound.playGunSound(Game.sound.guns.drop);
 };

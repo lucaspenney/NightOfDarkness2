@@ -80,7 +80,7 @@ function Gun(x, y, type) {
 Gun.prototype.pickUp = function(owner) {
 	if (this.dropTime - getCurrentMs() < -1 && !this.pickedUp) {
 		this.owner = owner;
-		this.owner.gun = this;
+		this.owner.inventory.addItem(this);
 		this.pickedUp = true;
 		Game.sound.playGunSound(Game.sound.guns.pickup);
 	}
@@ -100,6 +100,7 @@ Gun.prototype.drop = function() {
 	this.x = Game.player.x + (Math.random() * 10) - 10;
 	this.y = Game.player.y + (Math.random() * 10) - 10;
 	this.pickedUp = false;
+	this.sprite.scale = 1;
 	this.dropTime = getCurrentMs();
 	this.owner.gun = null;
 	Game.sound.playGunSound(Game.sound.guns.drop);

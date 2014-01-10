@@ -80,7 +80,11 @@ UI.prototype.drawHealth = function(x, y) {
 UI.prototype.drawInventory = function() {
 	var x = 25,
 		y = 420;
-	for (var i = 0; i < Game.player.inventory.items.length; i++) {
+	for (var i = 1; i < Game.player.inventory.items.length; i++) {
+		if (Game.player.inventory.selectedItem === i) {
+			ctx.fillStyle = "#00CC00";
+			ctx.fillRect(x-10,y-10,25,25);
+		}
 		Game.player.inventory.items[i].sprite.scale = 1.5;
 		Game.player.inventory.items[i].sprite.drawImage(x, y);
 		x += 45;
@@ -96,14 +100,21 @@ UI.prototype.drawGun = function(x, y) {
 	var gunammo;
 	var gunclipammo;
 	var gunclipmax;
-	if (Game.player.gun !== null) {
-		gunname = Game.player.gun.displayName;
-		gunammo = Game.player.gun.ammo;
-		gunclipammo = Game.player.gun.clipAmmo;
-		gunclipmax = Game.player.gun.clipSize;
-	} else {
+	if (Game.player.getCurrentEquip() instanceof Gun) {
+		gunname = Game.player.getCurrentEquip().displayName;
+		gunammo = Game.player.getCurrentEquip().ammo;
+		gunclipammo = Game.player.getCurrentEquip().clipAmmo;
+		gunclipmax = Game.player.getCurrentEquip().clipSize;
+	} else if (Game.player.getCurrentEquip() instanceof Item) {
+		//
+		gunname = "Item";
+		gunammo = 1;
+		gunclipammo = 0;
+		gunclipmax = 0;
+	}
+	else {
 		gunname = "Unarmed";
-		gunammo = 0;
+		gunammo = 1;
 		gunclipammo = 0;
 		gunclipmax = 0;
 	}
@@ -111,9 +122,9 @@ UI.prototype.drawGun = function(x, y) {
 	ctx.fillText(gunclipammo + "/" + gunammo, x + 60, y - 40);
 
 	try {
-		Game.player.gun.sprite.scale = 2;
-		Game.player.gun.sprite.drawImage(x + 50, y - 25);
-		Game.player.gun.sprite.scale = 1;
+		Game.player.getCurrentEquip().sprite.scale = 2;
+		Game.player.getCurrentEquip().sprite.drawImage(x + 50, y - 25);
+		Game.player.getCurrentEquip().sprite.scale = 1;
 	} catch (e) {}
 };
 

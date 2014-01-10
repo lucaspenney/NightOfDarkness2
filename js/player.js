@@ -28,7 +28,7 @@ function Player() {
 
 Player.prototype.update = function() {
 	this.boundingBox.update(this.x + (this.width / 2) - 18, this.y + (this.height / 2) - 18);
-	if (Game.input.mouse.down) this.fire();
+	if (Game.input.mouse.down) this.use();
 	if ((this.lastUpdate - getCurrentMs()) < -0.65) {
 		if (this.flashlight) {
 			this.batteryPower -= 1;
@@ -56,16 +56,16 @@ Player.prototype.render = function() {
 	if (this.sprite.rotation > -30 && this.sprite.rotation < 90) {
 		this.sprite.rotation -= 5;
 	}
-	console.log(this.sprite.rotation);
 	this.sprite.renderOnScreen(this.x, this.y);
 
 	ctx.fillStyle = "#FFFFFF";
 	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 
-	if (this.gun === null) this.sprite.xOffset = 0;
-	else if (this.gun !== null) {
-		if (this.gun.reloading) this.sprite.xOffset = 0;
-		else this.sprite.xOffset = 16;
+	if (this.getCurrentEquip() instanceof Gun)  {
+		if (!this.getCurrentEquip().reloading) {
+			this.sprite.xOffset = 16;
+		}
+		else this.sprite.xOffset = 0;
 	}
 
 	if (this.x > 300 && this.x + 300 < Game.screen.maxXOffset * -1) Game.screen.xOffset = -(this.x - 300);
@@ -84,9 +84,9 @@ Player.prototype.fire = function() {
 };
 
 Player.prototype.reloadWeapon = function() {
-	if (this.gun !== null) {
-		if (this.gun.ammo > 0)
-			this.gun.reloadGun();
+	if (this.getCurrentEquip() instanceof Gun) {
+		if (this.getCurrentEquip().ammo > 0)
+			this.getCurrentEquip().reloadGun();
 	}
 };
 
@@ -111,17 +111,32 @@ Player.prototype.takeDamage = function(amount) {
 };
 
 Player.prototype.drop = function() {
-	if (this.gun !== null) {
+	if (this.getCurrentEquip() !== null) {
 		if ((this.lastGunDrop - getCurrentMs()) < -0.6) {
-			this.gun.drop();
+			this.getCurrentEquip().drop();
+			this.inventory.removeItem(this.getCurrentEquip());
 			this.lastGunDrop = getCurrentMs();
 		}
 	}
 };
 
+
+Player.prototype.interact = function() {
+	//Interact with the environment
+};
+
 Player.prototype.use = function() {
-	//Interact with environment? Maybe not...
-	this.inventory.useItem(this.inventory.selectedItem);
+	//Use current inventory item
+	if (this.getCurrentEquip() instanceof Gun) {
+		this.inventory.items[this.inventory.selectedItem].fire();
+	}
+	else {
+		this.inventory.useItem(this.inventory.selectedItem);
+	}
+};
+
+Player.prototype.getCurrentEquip = function() {
+	return this.inventory.items[this.inventory.selectedItem];
 };
 
 Player.prototype.move = function(xm, ym) {
