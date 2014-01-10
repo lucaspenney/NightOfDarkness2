@@ -59,7 +59,18 @@ Bullet.prototype.update = function() {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.level.tiles[x][y])) {
 					canMove = false;
+					var xa = 0;
+					var ya = 0;
+					var count = 0;
+					while (!this.boundingBox.wouldCollide(xa, ya, Game.level.tiles[x][y])) {
+						xa += reduceToOne(this.xv);
+						ya += reduceToOne(this.yv);
+						count++;
+						if (count > 10) break; //This is a bit hacky, but for some reason this can occasionally become an infinite loop
+					}
+					Game.particles.createSparkParticles(this.x + xa, this.y + ya);
 					Game.deleteEntity(this);
+					return;
 				}
 			}
 		}

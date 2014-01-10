@@ -25,9 +25,15 @@ ParticleManager.prototype.createBloodParticles = function(x, y) {
 	}
 };
 
+ParticleManager.prototype.createSparkParticles = function(x, y) {
+	var particleCount = Math.floor((Math.random() * 5)) + 5;
+	while (particleCount--) {
+		this.particles.push(new Particle(x, y, 230, 230, 215, random(0, Math.PI * 2), random(1, 2.5), 0.5, 1.0, 0.6, 10, 1));
+	}
+};
 /* Particle Object */
 
-function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime) {
+function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime, size) {
 	this.x = x;
 	this.y = y;
 	this.lifeTime = lifetime;
@@ -42,6 +48,7 @@ function Particle(x, y, r, g, b, angle, speed, friction, alpha, decay, lifetime)
 	this.friction = friction;
 	this.alpha = alpha;
 	this.decay = decay;
+	this.size = size || 2;
 	while (this.coordinateCount--) {
 		this.coordinates.push([this.x, this.y]);
 	}
@@ -61,7 +68,7 @@ Particle.prototype.render = function() {
 	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ');';
 	//ctx.beginPath();
 	//ctx.arc(this.x+screen.xOffset,this.y+screen.yOffset, 9, 0, 2 * Math.PI, false);
-	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
+	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, this.size, this.size);
 	//ctx.fill();
 };
 
