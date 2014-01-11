@@ -29,49 +29,62 @@ function Item(x, y, type) {
 	}
 	this.boundingBox = new BoundingBox(this.x, this.y, 10, 10);
 	this.dropTime = 0;
+	this.useTime = 2;
+	this.useStartTime = 0;
+	this.consumed = false;
 	Game.entities.push(this);
 }
 
 Item.prototype.use = function() {
-	if (this.type === 'ammopack' && Game.player.gun === null) return;
-	if (this.type === 'batterypack' && Game.player.battery > 96) return;
-	switch (this.type) {
-		case 'healthpack':
-			{
-				Game.player.health += 25;
-				if (Game.player.health > 100) Game.player.health = 100;
-				break;
-			}
-		case 'ammopack':
-			{
-				if (Game.player.gun instanceof Gun) Game.player.gun.ammo += Game.player.gun.clipSize * 4;
-				break;
-			}
-		case 'batterypack':
-			{
-				Game.player.batteryPower += 50;
-				if (Game.player.batteryPower > 100) Game.player.batteryPower = 100;
-				break;
-			}
-		case 'flashlight':
-			{
-				Game.player.hasFlashlight = true;
-				break;
-			}
+	if (this.useStartTime === 0) this.useStartTime = getCurrentMs();
+	if (this.useStartTime - getCurrentMs() < -this.useTime) {
+		switch (this.type) {
+			case 'healthpack':
+				{
+					Game.player.health += 25;
+					if (Game.player.health > 100) Game.player.health = 100;
+					break;
+				}
+			case 'ammopack':
+				{
+					if (Game.player.gun instanceof Gun) Game.player.gun.ammo += Game.player.gun.clipSize * 4;
+					break;
+				}
+			case 'batterypack':
+				{
+					Game.player.batteryPower += 50;
+					if (Game.player.batteryPower > 100) Game.player.batteryPower = 100;
+					break;
+				}
+			case 'flashlight':
+				{
+					Game.player.hasFlashlight = true;
+					break;
+				}
+		}
+		this.consumed = true;
+		Game.input.mouse.down = false;
 	}
 };
 
 Item.prototype.pickUp = function(owner) {
 	if (this.dropTime - getCurrentMs() < -1 && !this.pickedUp) {
-		this.owner = owner;
-		this.owner.inventory.addItem(this);
-		this.pickedUp = true;
+		if (owner.inventory.addItem(this)) {
+			this.owner = owner;
+			this.pickedUp = true;
+		}
 	}
 };
 
 Item.prototype.render = function() {
 	if (!this.pickedUp) {
 		this.sprite.renderOnScreen(this.x, this.y);
+	}
+	//Draw use progress bar
+	if (this.useStartTime !== 0) {
+		var amount = (getCurrentMs() - this.useStartTime) * 10;
+		ctx.fillStyle = "#0C0";
+		ctx.fillRect(this.owner.x + Game.screen.xOffset - (this.useTime * 5) - 1, this.owner.y + Game.screen.yOffset + 10, amount, 4);
 	}
 };
 
@@ -80,6 +93,9 @@ Item.prototype.update = function() {
 		if (this.boundingBox.isColliding(Game.player)) {
 			this.pickUp(Game.player);
 		}
+	}
+	if (!Game.input.mouse.down) {
+		this.useStartTime = 0;
 	}
 	this.boundingBox.update(this.x, this.y);
 };

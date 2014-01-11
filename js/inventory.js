@@ -8,8 +8,14 @@ function Inventory() {
 Inventory.prototype.useItem = function(index) {
 	if (this.items[index]) {
 		this.items[index].use();
-		this.removeItem(this.items[index]);
-		this.selectedItem = this.items.length-1;
+		if (this.items[index].consumed) {
+			var item = this.items[index]; //Maintain a reference so we can delete it after removing
+			this.removeItem(this.items[index]);
+			Game.deleteEntity(item); //Delete the item if it's been consumed
+			if (this.items[this.selectedItem] === undefined || this.items[this.selectedItem] === null) {
+				this.selectedItem = this.items.length - 1;
+			}
+		}
 	}
 };
 
@@ -22,8 +28,11 @@ Inventory.prototype.selectItemSlot = function(num) {
 };
 
 Inventory.prototype.addItem = function(item) {
-	if (this.items.length < this.size) {
+	if (this.items.length <= this.size) {
 		this.items.push(item);
+		if (this.items[this.selectedItem] === undefined || this.items[this.selectedItem] === null) {
+			this.selectedItem = this.items.length - 1;
+		}
 		return true;
 	} else return false;
 };
@@ -37,6 +46,6 @@ Inventory.prototype.removeItem = function(item) {
 		}
 	}
 	if (this.items[this.selectedItem] === undefined || this.items[this.selectedItem] === null) {
-		this.selectedItem = this.items.length-1;
+		this.selectedItem = this.items.length - 1;
 	}
 };

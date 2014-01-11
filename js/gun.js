@@ -79,10 +79,11 @@ function Gun(x, y, type) {
 
 Gun.prototype.pickUp = function(owner) {
 	if (this.dropTime - getCurrentMs() < -1 && !this.pickedUp) {
-		this.owner = owner;
-		this.owner.inventory.addItem(this);
-		this.pickedUp = true;
-		Game.sound.playGunSound(Game.sound.guns.pickup);
+		if (owner.inventory.addItem(this)) {
+			this.owner = owner;
+			this.pickedUp = true;
+			Game.sound.playGunSound(Game.sound.guns.pickup);
+		}
 	}
 };
 

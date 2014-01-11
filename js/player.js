@@ -61,11 +61,10 @@ Player.prototype.render = function() {
 	ctx.fillStyle = "#FFFFFF";
 	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
 
-	if (this.getCurrentEquip() instanceof Gun)  {
+	if (this.getCurrentEquip() instanceof Gun) {
 		if (!this.getCurrentEquip().reloading) {
 			this.sprite.xOffset = 16;
-		}
-		else this.sprite.xOffset = 0;
+		} else this.sprite.xOffset = 0;
 	}
 
 	if (this.x > 300 && this.x + 300 < Game.screen.maxXOffset * -1) Game.screen.xOffset = -(this.x - 300);
@@ -129,8 +128,7 @@ Player.prototype.use = function() {
 	//Use current inventory item
 	if (this.getCurrentEquip() instanceof Gun) {
 		this.inventory.items[this.inventory.selectedItem].fire();
-	}
-	else {
+	} else {
 		this.inventory.useItem(this.inventory.selectedItem);
 	}
 };
@@ -141,6 +139,9 @@ Player.prototype.getCurrentEquip = function() {
 
 Player.prototype.move = function(xm, ym) {
 	if (!Game.inGame) return;
+	if (this.getCurrentEquip() instanceof Item) {
+		if (this.getCurrentEquip().useStartTime !== 0) return;
+	}
 	xm *= 1;
 	ym *= 1;
 

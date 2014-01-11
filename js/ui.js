@@ -6,6 +6,8 @@ function UI() {
 	this.hudImg = new Image();
 	this.hudImg.src = "images/hud.png";
 	this.loadingPercent = 0;
+	this.flashlightSprite = new Sprite("images/flashlight_large.png", true);
+	this.inventorySelectedSprite = new Sprite("images/inventory_selected.png", true);
 }
 
 UI.prototype.draw = function() {
@@ -14,7 +16,7 @@ UI.prototype.draw = function() {
 	ctx.fillStyle = "#F00";
 	ctx.font = 'normal 20px arial';
 	//ctx.fillText(this.alert, canvas.width/2,canvas.height/4);
-	if (this.gameOver) ctx.drawImage(this.gameOverImg, (canvas.width / 2) - this.gameOverImg.width / 2, canvas.height / 4);
+	if (this.gameOver) ctx.drawImage(this.gameOverImg, (canvas.width / 4) - this.gameOverImg.width / 4, canvas.height / 4);
 
 
 	ctx.drawImage(this.hudImg, 0, 0);
@@ -23,11 +25,11 @@ UI.prototype.draw = function() {
 
 	this.drawGun(460, 435);
 
-	this.drawHealth(210, 440);
+	this.drawHealth(211, 430);
 
-	//this.drawBattery(170, 420);
+	this.drawFlashlight(10, 370);
 
-	this.drawInventory();
+	this.drawInventory(20, 430);
 };
 
 UI.prototype.drawLoadingScreen = function() {
@@ -66,34 +68,47 @@ UI.prototype.drawBattery = function(x, y) {
 	ctx.fillText("Flashlight", x, y - 5);
 };
 
-UI.prototype.drawHealth = function(x, y) {
-	var r = (255 - Game.player.health) * 2,
-		g = Game.player.health * 2,
-		b = 0;
-	if (Game.player.health < 75) {
-		g = Math.floor(g /= 4);
-	} else r = Math.floor(r /= 4);
-	ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + '1' + ')';
-	ctx.fillRect(x, y, Math.floor(Game.player.health * 1.7), 15);
+UI.prototype.drawFlashlight = function(x, y) {
+	this.flashlightSprite.frameWidth = 16;
+	if (Game.player.flashlight) this.flashlightSprite.xOffset = 16;
+	else this.flashlightSprite.xOffset = 0;
+	this.flashlightSprite.drawImage(x, y);
+
+	ctx.strokeStyle = "#333";
+	ctx.strokeRect(x + 15, y - 2, 8, 35);
+	var powerVal = Math.floor(Game.player.batteryPower / 3);
+	ctx.fillStyle = "#0C0";
+	ctx.fillRect(x + 16, y + 33 - powerVal, 6, powerVal);
 };
 
-UI.prototype.drawInventory = function() {
-	var x = 25,
-		y = 420;
+UI.prototype.drawHealth = function(x, y) {
+	var r = 0,
+		g = 0,
+		b = 0;
+	if (Game.player.health > 80) g = 150;
+	else if (Game.player.health > 50) g = 120;
+	else if (Game.player.health > 30) r = 180;
+	else if (Game.player.health > 20) r = 100;
+	ctx.strokeStyle = "#333";
+	ctx.strokeRect(x, y, 242, 10);
+
+	ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + '1' + ')';
+	ctx.fillRect(x + 1, y + 1, Math.floor(Game.player.health * 2.4), 8);
+};
+
+UI.prototype.drawInventory = function(x, y) {
 	for (var i = 1; i < Game.player.inventory.items.length; i++) {
 		if (Game.player.inventory.selectedItem === i) {
-			ctx.fillStyle = "#00CC00";
-			ctx.fillRect(x-10,y-10,25,25);
+			this.inventorySelectedSprite.drawImage(x - 2, y + 3);
 		}
-		Game.player.inventory.items[i].sprite.scale = 1.5;
-		Game.player.inventory.items[i].sprite.drawImage(x, y);
-		x += 45;
+		Game.player.inventory.items[i].sprite.drawImage(x - 1, y + 2);
+		x += 30;
 	}
 };
 
 UI.prototype.drawGun = function(x, y) {
 	ctx.textAlign = 'center';
-	ctx.font = 'normal 16pt Courier New';
+	ctx.font = 'normal 10pt Courier New';
 	ctx.fillStyle = "#FFF";
 
 	var gunname;
@@ -111,19 +126,18 @@ UI.prototype.drawGun = function(x, y) {
 		gunammo = 1;
 		gunclipammo = 0;
 		gunclipmax = 0;
-	}
-	else {
+	} else {
 		gunname = "Unarmed";
 		gunammo = 1;
 		gunclipammo = 0;
 		gunclipmax = 0;
 	}
-	ctx.fillText(gunname, x + 65, y + 10);
-	ctx.fillText(gunclipammo + "/" + gunammo, x + 60, y - 40);
+	ctx.fillText(gunname, x + 75, y + 5);
+	ctx.fillText(gunclipammo + "/" + gunammo, x + 110, y - 10);
 
 	try {
 		Game.player.getCurrentEquip().sprite.scale = 2;
-		Game.player.getCurrentEquip().sprite.drawImage(x + 50, y - 25);
+		Game.player.getCurrentEquip().sprite.drawImage(x + 50, y - 30);
 		Game.player.getCurrentEquip().sprite.scale = 1;
 	} catch (e) {}
 };
