@@ -8,6 +8,7 @@ function Tile(x, y, id) {
 	this.boundingBox = new BoundingBox(this.x, this.y, 32, 32);
 	this.color = '#060';
 	if (this.id <= 16) this.solid = true;
+	else this.solid = false;
 }
 
 Tile.prototype.setColor = function(color) {

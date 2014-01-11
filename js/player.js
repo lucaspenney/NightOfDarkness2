@@ -29,7 +29,7 @@ function Player() {
 Player.prototype.update = function() {
 	this.boundingBox.update(this.x + (this.width / 2) - 18, this.y + (this.height / 2) - 18);
 	if (Game.input.mouse.down) this.use();
-	if ((this.lastUpdate - getCurrentMs()) < -0.65) {
+	if ((this.lastUpdate - getCurrentMs()) < -0.8) {
 		if (this.flashlight) {
 			this.batteryPower -= 1;
 			if (this.batteryPower <= 0) {

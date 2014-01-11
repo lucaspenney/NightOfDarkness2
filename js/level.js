@@ -7,6 +7,7 @@ function Level(num) {
 	tmxloader.load(fileName);
 
 	this.tiles = [];
+	this.collisionTiles = [];
 	this.xOffset = 0;
 	this.yOffset = 0;
 	this.width = tmxloader.map.width;
@@ -23,6 +24,17 @@ function Level(num) {
 			this.tiles[x][y] = new Tile(x * 32, y * 32, tmxloader.map.layers[0].data[y][x]);
 		}
 	}
+	for (var x = 0; x < this.width; x++) {
+		this.collisionTiles[x] = [];
+		for (var y = 0; y < this.height; y++) {
+			if (this.tiles[x][y].solid) {
+				this.collisionTiles[x][y] = 0;
+			} else {
+				this.collisionTiles[x][y] = 1;
+			}
+		}
+	}
+
 
 	for (var x = 0; x < this.width; x++) {
 		for (var y = 0; y < this.height; y++) {

@@ -53,21 +53,6 @@ UI.prototype.drawStats = function(x, y) {
 	ctx.fillText("Time: " + Game.level.levelTime, x, y + 20);
 };
 
-UI.prototype.drawBattery = function(x, y) {
-	ctx.textAlign = 'left';
-	ctx.font = 'normal 16px arial';
-	ctx.strokeStyle = "#666";
-	ctx.lineWidth = 1;
-	ctx.strokeRect(x, y, 96, 26);
-	ctx.fillStyle = "#0C0";
-	//ctx.fillRect(x+2,y+2,player.batteryPower,20);
-	for (var i = 0; i < Game.player.batteryPower / 10; i++) {
-		ctx.fillRect(x + 3 + (i * 9), y + 3, 8, 20);
-	}
-	ctx.fillStyle = "#FFF";
-	ctx.fillText("Flashlight", x, y - 5);
-};
-
 UI.prototype.drawFlashlight = function(x, y) {
 	this.flashlightSprite.frameWidth = 16;
 	if (Game.player.flashlight) this.flashlightSprite.xOffset = 16;
@@ -78,7 +63,7 @@ UI.prototype.drawFlashlight = function(x, y) {
 	ctx.strokeRect(x + 15, y - 2, 8, 35);
 	var powerVal = Math.floor(Game.player.batteryPower / 3);
 	ctx.fillStyle = "#0C0";
-	ctx.fillRect(x + 16, y + 33 - powerVal, 6, powerVal);
+	ctx.fillRect(x + 16, y + 32 - powerVal, 6, powerVal);
 };
 
 UI.prototype.drawHealth = function(x, y) {

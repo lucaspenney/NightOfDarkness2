@@ -29,11 +29,11 @@ function Zombie(x, y) {
 
 Zombie.prototype.render = function() {
 	if (this.target !== null) {
-		this.rotation = Math.atan2(this.y - (this.height / 2) - this.target.y, this.x - (this.width / 2) - this.target.x) * (180 / Math.PI);
+		this.rotation = Math.atan2(this.y - Game.player.y, this.x - Game.player.x) * (180 / Math.PI);
 		if (this.rotation < 0) {
 			this.rotation += 360;
 		}
-		this.rotation -= 85;
+		this.rotation -= 90;
 	}
 	this.sprite.rotation = this.rotation;
 	if (this.isDying) {
@@ -54,12 +54,6 @@ Zombie.prototype.move = function() {
 			this.lastUpdate = getCurrentMs();
 		}
 	}
-	if (!this.wandering) {
-		//Chasing player
-		var distToPlayer = new Point(this.x, this.y).getDist(new Point(Game.player.x, Game.player.y));
-		this.target = new Point(Game.player.x - 4, Game.player.y - 1);
-	}
-
 	if (this.target instanceof Point) {
 		var dirx = (this.target.x - this.x);
 		var diry = (this.target.y - this.y);
@@ -69,9 +63,6 @@ Zombie.prototype.move = function() {
 		diry /= hyp;
 		this.xv = dirx * this.speed;
 		this.yv = diry * this.speed;
-		if (hyp < 5) {
-			this.target = null;
-		}
 	}
 	var canMovex = true;
 	var canMovey = true;
@@ -131,8 +122,26 @@ Zombie.prototype.attack = function() {
 
 Zombie.prototype.think = function() {
 	var distToPlayer = new Point(Game.player.x, Game.player.y).getDist(new Point(this.x, this.y));
-	if (distToPlayer < this.vision) {
-		this.target = new Point(Game.player.x, Game.player.y);
+	if (distToPlayer < this.vision || !this.wandering) {
+
+		var thisXTile = (this.x - (this.x % 32)) / 32;
+		var thisYTile = (this.y - (this.y % 32)) / 32;
+		var playerXTile = (Game.player.x - (Game.player.x % 32)) / 32;
+		var playerYTile = (Game.player.y - (Game.player.y % 32)) / 32;
+
+		var graph = new Graph(Game.level.collisionTiles);
+		var start = graph.nodes[thisXTile][thisYTile];
+		var end = graph.nodes[playerXTile][playerYTile];
+		var result = astar.search(graph.nodes, start, end, true);
+		var resultWithDiagonals = astar.search(graph.nodes, start, end, true);
+		// result is an array containing the shortest path
+
+
+		//if (result[1] !== undefined)
+		//	this.target = new Point((result[1].x * 32) + 16, (result[1].y * 32) + 16);
+		if (result[0] !== undefined) {
+			this.target = new Point((result[0].x * 32) + 16, (result[0].y * 32) + 16);
+		} else this.target = new Point(Game.player.x, Game.player.y);
 		this.wandering = false;
 	} else {
 		if (Math.random() * 10 > 8) {
