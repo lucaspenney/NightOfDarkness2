@@ -8,8 +8,8 @@ var Game = null;
 //HTML onLoad event - Loading the game
 $(document).ready(function() {
 	canvas = document.getElementById('canvas');
-	canvas.width = 600 * 2;
-	canvas.height = 450 * 2;
+	canvas.width = 600 * 4;
+	canvas.height = 450 * 4;
 
 	//check whether browser supports getting canvas context
 	if (canvas && canvas.getContext) {
@@ -22,14 +22,16 @@ $(document).ready(function() {
 		ctx.mozImageSmoothingEnabled = false;
 		ctx.imageSmoothingEnabled = false;
 	}
-	ctx.scale(2, 2);
+	ctx.scale(4, 4);
 
 	Game = new GameEngine(600, 450);
 	Game.loader.load();
 	Game.loop();
 });
 
-function GameEngine() {
+function GameEngine(width, height) {
+	this.width = width;
+	this.height = height;
 	this.settings = new Settings();
 	this.ui = new UI();
 	this.loader = new AssetLoader();

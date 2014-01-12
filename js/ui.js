@@ -15,8 +15,7 @@ UI.prototype.draw = function() {
 
 	ctx.fillStyle = "#F00";
 	ctx.font = 'normal 20px arial';
-	//ctx.fillText(this.alert, canvas.width/2,canvas.height/4);
-	if (this.gameOver) ctx.drawImage(this.gameOverImg, (canvas.width / 4) - this.gameOverImg.width / 4, canvas.height / 4);
+	if (this.gameOver) ctx.drawImage(this.gameOverImg, (Game.width / 2) - this.gameOverImg.width / 2, Game.height / 4);
 
 
 	ctx.drawImage(this.hudImg, 0, 0);
@@ -35,14 +34,13 @@ UI.prototype.draw = function() {
 UI.prototype.drawLoadingScreen = function() {
 	this.loadingPercent += (Game.loader.getLoadPercent() - this.loadingPercent) * 0.1;
 	ctx.fillStyle = "#000";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	//ctx.fillText(this.alert, canvas.width/2,canvas.height/4);
+	ctx.fillRect(0, 0, Game.width, Game.height);
 	ctx.textAlign = 'center';
 	ctx.fillStyle = "#FFF";
 	ctx.font = 'normal 20px arial';
-	ctx.fillText("Loading...", canvas.width / 4, canvas.height / 8);
-	ctx.fillRect(100, canvas.height / 6, this.loadingPercent * 4, 30);
-	ctx.fillText(Math.floor(Game.loader.getLoadPercent()) + "%", canvas.width / 4, canvas.height / 4);
+	ctx.fillText("Loading...", Game.width / 2, Game.height / 4);
+	ctx.fillRect(100, Game.height / 3, this.loadingPercent * 4, 30);
+	ctx.fillText(Math.floor(Game.loader.getLoadPercent()) + "%", Game.width / 2, Game.height / 2);
 };
 
 UI.prototype.drawStats = function(x, y) {

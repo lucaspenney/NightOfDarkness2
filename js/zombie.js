@@ -7,7 +7,7 @@ function Zombie(x, y) {
 	this.yv = 0;
 	this.width = 16;
 	this.height = 16;
-	this.target = new Point(400, 200);
+	this.target = new Point(0, 0);
 	this.selected = false;
 	this.layer = 2;
 	this.rotation = 0;
@@ -122,36 +122,27 @@ Zombie.prototype.attack = function() {
 
 Zombie.prototype.think = function() {
 	var distToPlayer = new Point(Game.player.x, Game.player.y).getDist(new Point(this.x, this.y));
-	if (distToPlayer < this.vision || !this.wandering) {
-
+	if (distToPlayer < this.vision) this.wandering = false;
+	if (!this.wandering) {
 		var thisXTile = (this.x - (this.x % 32)) / 32;
 		var thisYTile = (this.y - (this.y % 32)) / 32;
 		var playerXTile = (Game.player.x - (Game.player.x % 32)) / 32;
 		var playerYTile = (Game.player.y - (Game.player.y % 32)) / 32;
 
+		//Using astar.js
 		var graph = new Graph(Game.level.collisionTiles);
 		var start = graph.nodes[thisXTile][thisYTile];
 		var end = graph.nodes[playerXTile][playerYTile];
-		var result = astar.search(graph.nodes, start, end, true);
-		var resultWithDiagonals = astar.search(graph.nodes, start, end, true);
-		// result is an array containing the shortest path
+		var result = astar.search(graph.nodes, start, end, true); //Set last param to true to include diagonal path, false without
 
-
-		//if (result[1] !== undefined)
-		//	this.target = new Point((result[1].x * 32) + 16, (result[1].y * 32) + 16);
 		if (result[0] !== undefined) {
-			this.target = new Point((result[0].x * 32) + 16, (result[0].y * 32) + 16);
-		} else this.target = new Point(Game.player.x, Game.player.y);
-		this.wandering = false;
-	} else {
-		if (Math.random() * 10 > 8) {
-			if ((getCurrentMs()) - this.lastWander > 5) {
-				var r1 = Math.floor(Math.random() * 125) - 75;
-				var r2 = Math.floor(Math.random() * 125) - 75;
-				this.target = new Point(this.x + r1, this.y + r2);
-				this.lastWander = getCurrentMs();
-			}
+			var rand = Math.floor(Math.random() * 8);
+			this.target = new Point((result[0].x * 32) + rand, (result[0].y * 32) + rand);
+		} else {
+			this.target = new Point(Game.player.x, Game.player.y);
 		}
+	} else {
+
 	}
 	if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.player) && !this.isDying) {
 		this.attack();
@@ -175,7 +166,7 @@ Zombie.prototype.update = function() {
 
 Zombie.prototype.hurt = function() {
 	this.health -= 10;
-	this.target = new Point(Game.player.x, Game.player.y);
+	this.wandering = false;
 	Game.particles.createBloodParticles(this.x, this.y);
 	if (this.health <= 0) {
 		new Decal(this.x, this.y, 'images/blood.png');
