@@ -64,8 +64,7 @@ Particle.prototype.render = function() {
 	// move to the last tracked coordinates in the set, then draw a line to the current x and y
 	//ctx.moveTo( this.coordinates[ this.coordinates.length - 1 ][ 0 ], this.coordinates[ this.coordinates.length - 1 ][ 1 ] );
 	//ctx.lineTo( this.x+screen.xOffset, this.y+screen.yOffset );
-	ctx.fillStyle = "#B21";
-	ctx.fillStyle = 'rgba(' + this.r + ',' + this.g + ',' + this.b + ',' + this.alpha + ');';
+	ctx.fillStyle = "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.alpha + ")";
 	//ctx.beginPath();
 	//ctx.arc(this.x+screen.xOffset,this.y+screen.yOffset, 9, 0, 2 * Math.PI, false);
 	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, this.size, this.size);
