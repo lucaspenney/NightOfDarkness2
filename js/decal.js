@@ -14,7 +14,7 @@ Decal.prototype.render = function() {
 
 Decal.prototype.update = function() {
 	this.lifeTime++;
-	if (this.lifeTime > 300) {
+	if (this.lifeTime > 600) {
 		this.sprite.fadeOut();
 		if (this.sprite.alpha === 0) Game.deleteEntity(this);
 	}

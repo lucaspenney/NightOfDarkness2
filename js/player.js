@@ -58,13 +58,14 @@ Player.prototype.render = function() {
 	}
 	this.sprite.renderOnScreen(this.x, this.y);
 
-	ctx.fillStyle = "#FFFFFF";
-	ctx.fillRect(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 2, 2);
-
+	this.sprite.xOffset = 0;
 	if (this.getCurrentEquip() instanceof Gun) {
 		if (!this.getCurrentEquip().reloading) {
 			this.sprite.xOffset = 16;
 		} else this.sprite.xOffset = 0;
+	} else if (this.getCurrentEquip() instanceof Item) {
+		if (this.getCurrentEquip().useStartTime !== 0) this.sprite.xOffset = 32;
+		else this.sprite.xOffset = 0;
 	}
 
 	if (this.x > 300 && this.x + 300 < Game.screen.maxXOffset * -1) Game.screen.xOffset = -(this.x - 300);

@@ -4,7 +4,7 @@ function Bullet(gun, x, y, power, target) {
 	this.y = y;
 	this.lastPos = new Point(this.x, this.y);
 	this.target = target;
-	this.speed = 8;
+	this.speed = 12;
 	this.xv = (target.x - this.x) * this.speed;
 	this.yv = (target.y - this.y) * this.speed;
 	this.xv /= this.target.getDist(new Point(this.x, this.y));
@@ -54,8 +54,14 @@ Bullet.prototype.update = function() {
 		}
 	}
 	var canMove = true;
-	for (var x = 0; x < Game.level.width; x++) {
-		for (var y = 0; y < Game.level.height; y++) {
+	var xpos = Math.floor((this.x / 32)) - 5;
+	var ypos = Math.floor((this.y / 32)) - 5;
+	if (xpos < 0) xpos = 0;
+	if (xpos > Game.level.width - 10) xpos = Game.level.width - 10;
+	if (ypos < 0) ypos = 0;
+	if (ypos > Game.level.height - 10) ypos = Game.level.height - 10;
+	for (var x = xpos; x < xpos + 10; x++) {
+		for (var y = ypos; y < ypos + 10; y++) {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.level.tiles[x][y])) {
 					canMove = false;

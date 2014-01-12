@@ -164,7 +164,7 @@ Zombie.prototype.update = function() {
 
 	if (this.isDying) {
 		this.deathTime++;
-		if (this.deathTime > 25) {
+		if (this.sprite.alpha === 0) {
 			Game.player.kills++;
 			Game.deleteEntity(this);
 		}
