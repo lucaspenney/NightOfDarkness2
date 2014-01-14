@@ -157,7 +157,7 @@ Player.prototype.move = function(xm, ym) {
 		}
 	}
 	for (var i = 0; i < Game.entities.length; i++) {
-		if (Game.entities[i] instanceof Zombie) {
+		if (Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Barricade) {
 			if (this.boundingBox.wouldCollide(xm, ym, Game.entities[i])) {
 				canMove = false;
 			}

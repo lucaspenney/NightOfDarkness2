@@ -90,10 +90,9 @@ Zombie.prototype.move = function() {
 	}
 
 	for (var i = 0; i < Game.entities.length; i++) {
-		if ((Game.entities[i] instanceof Player || Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Npc) && Game.entities[i] !== this) {
+		if ((Game.entities[i] instanceof Player || Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Npc || Game.entities[i] instanceof Barricade) && Game.entities[i] !== this) {
 			if (this.boundingBox.wouldCollide(this.xv, 0, Game.entities[i])) {
 				canMovex = false;
-
 			}
 			if (this.boundingBox.wouldCollide(0, this.yv, Game.entities[i])) {
 				canMovey = false;
@@ -115,6 +114,15 @@ Zombie.prototype.attack = function() {
 		var distToPlayer = new Point(this.x, this.y).getDist(new Point(Game.player.x, Game.player.y));
 		if (distToPlayer < 30) {
 			Game.player.takeDamage(Math.floor(Math.random() * 10) + 10);
+		}
+		for (var i = 0; i < Game.entities.length; i++) {
+			if (Game.entities[i] instanceof Barricade) {
+				var distToBarricade = new Point(this.x, this.y).getDist(new Point(Game.entities[i].x, Game.entities[i].y));
+				if (distToBarricade < 20) {
+					Game.entities[i].takeDamage(10);
+					break;
+				}
+			}
 		}
 		this.lastAttack = getCurrentMs();
 	}
@@ -144,7 +152,7 @@ Zombie.prototype.think = function() {
 	} else {
 
 	}
-	if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.player) && !this.isDying) {
+	if (!this.isDying) {
 		this.attack();
 	}
 };

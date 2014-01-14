@@ -84,6 +84,9 @@ function Level(num) {
 				case 18:
 					new Item(x * 32, y * 32, 'batterypack');
 					break;
+				case 19:
+					new Item(x * 32, y * 32, 'barricade');
+					break;
 				case 20:
 					new ItemSpawn(x * 32, y * 32);
 					break;

@@ -26,6 +26,11 @@ function Item(x, y, type) {
 				this.sprite.xOffset = 0;
 				break;
 			}
+		case 'barricade':
+			{
+				this.sprite.xOffset = 64;
+				break;
+			}
 	}
 	this.boundingBox = new BoundingBox(this.x, this.y, 10, 10);
 	this.dropTime = 0;
@@ -59,6 +64,12 @@ Item.prototype.use = function() {
 			case 'flashlight':
 				{
 					Game.player.hasFlashlight = true;
+					break;
+				}
+			case 'barricade':
+				{
+					//TODO: Add check to see if it's a valid place to put the barricade
+					new Barricade(this.owner.x, this.owner.y);
 					break;
 				}
 		}
