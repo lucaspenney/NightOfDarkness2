@@ -1,8 +1,5 @@
 function UI() {
-	this.alert = "";
-	this.gameOver = false;
-	this.gameOverImg = new Image();
-	this.gameOverImg.src = "images/gameover2.png";
+	this.gameOverSprite = new Sprite("images/gameover.png", true);
 	this.hudImg = new Image();
 	this.hudImg.src = "images/hud.png";
 	this.loadingPercent = 0;
@@ -12,11 +9,10 @@ function UI() {
 
 UI.prototype.draw = function() {
 	ctx.textAlign = 'center';
-
 	ctx.fillStyle = "#F00";
 	ctx.font = 'normal 20px arial';
-	if (this.gameOver) ctx.drawImage(this.gameOverImg, (Game.width / 2) - this.gameOverImg.width / 2, Game.height / 4);
-
+	if (Game.playerDead)
+		this.gameOverSprite.drawImage(Game.width / 2, Game.height / 3);
 
 	ctx.drawImage(this.hudImg, 0, 0);
 

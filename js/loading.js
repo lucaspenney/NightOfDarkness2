@@ -3,19 +3,29 @@ function AssetLoader() {
 	this.assets = [
 		"images/mainmenu.png",
 		"images/tilesheet.png",
+		"images/hud.png",
+		"images/inventory_selected.png",
+		"images/gameover.png",
+		"images/flashlight_large.png",
+		"images/items.png",
+		"images/muzzleflash.png",
 		"images/player.png",
 		"images/zombie.png",
-		"images/pistol3.png",
-		"images/smg3.png",
-		"images/shotgun2.png",
-		"images/flare.png"
+		"images/flashlight.png",
+		"images/pistol.png",
+		"images/smg.png",
+		"images/shotgun.png",
+		"images/machinegun.png",
+		"images/revolver.png",
+		"images/flare.png",
+
 	];
 	this.assetsLoaded = 0;
 	this.totalAssets = 1;
 }
 
 AssetLoader.prototype.load = function() {
-	this.totalAssets = 39;
+	this.totalAssets = 55;
 	var _this = this;
 	for (var i = 0; i < this.assets.length; i++) {
 		if (this.assets[i].indexOf(".png" != -1)) {

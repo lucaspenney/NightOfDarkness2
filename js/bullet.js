@@ -5,6 +5,7 @@ function Bullet(gun, x, y, power, target) {
 	this.lastPos = new Point(this.x, this.y);
 	this.target = target;
 	this.speed = 12;
+	this.muzzleFlash = new Sprite("images/muzzleflash.png", true);
 	this.xv = (target.x - this.x) * this.speed;
 	this.yv = (target.y - this.y) * this.speed;
 	this.xv /= this.target.getDist(new Point(this.x, this.y));
@@ -15,20 +16,13 @@ function Bullet(gun, x, y, power, target) {
 	this.lifeTime = 0;
 	Game.entities.push(this);
 }
-var muzzleFlash = new Image();
-muzzleFlash.src = 'images/muzzleflash.png';
 
 Bullet.prototype.render = function() {
 	if (this.lifeTime < 2) {
-		ctx.save();
-		ctx.translate(this.gun.owner.x + Game.screen.xOffset, this.gun.owner.y + Game.screen.yOffset);
-		ctx.rotate(degToRad(this.gun.owner.rotation + 180));
-		ctx.drawImage(muzzleFlash, -40, (-(this.gun.owner.height / 2)), muzzleFlash.width, muzzleFlash.height);
-		ctx.restore();
+		this.muzzleFlash.rotation = this.gun.owner.rotation;
+		this.muzzleFlash.renderOnScreen(this.x + this.xv, this.y + this.yv);
 	} else {
 		ctx.strokeStyle = "rgba(180,180,180,0.9)";
-		//ctx.beginPath();
-		//ctx.arc(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset, 1, 0, 2 * Math.PI, false);
 		ctx.beginPath();
 		ctx.moveTo(this.lastPos.x + Game.screen.xOffset, this.lastPos.y + Game.screen.yOffset);
 		ctx.lineTo(this.x + Game.screen.xOffset, this.y + Game.screen.yOffset);
@@ -37,9 +31,6 @@ Bullet.prototype.render = function() {
 		ctx.fill();
 	}
 };
-
-var bulletImage = new Image();
-bulletImage.src = 'images/bullet.png';
 
 Bullet.prototype.update = function() {
 	this.boundingBox.update(this.x, this.y);

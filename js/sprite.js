@@ -24,7 +24,6 @@ function Sprite(img, useFullImg) {
 		if (_this.useFullImg) {
 			_this.frameWidth = this.width;
 			_this.frameHeight = this.height;
-			console.log(_this.frameHeight);
 		}
 	};
 }

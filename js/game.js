@@ -47,6 +47,7 @@ function GameEngine(width, height) {
 	this.mainMenu = new MainMenu(this);
 	this.inMenu = true;
 	this.loaded = false;
+	this.playerDead = false;
 	this.entities = [];
 }
 GameEngine.prototype.toggleSound = function() {
@@ -98,7 +99,7 @@ GameEngine.prototype.gameOver = function() {
 			kongregate.stats.submit("Kill Count", player.kills);
 		}
 	}
-	this.ui.gameOver = true;
+	this.playerDead = true;
 	this.inGame = false;
 	this.level.fadeOut(); //TODO: Make this pass a callback
 	setTimeout("Game.end();", 4800);

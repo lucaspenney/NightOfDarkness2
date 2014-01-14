@@ -118,7 +118,7 @@ Zombie.prototype.attack = function() {
 		for (var i = 0; i < Game.entities.length; i++) {
 			if (Game.entities[i] instanceof Barricade) {
 				var distToBarricade = new Point(this.x, this.y).getDist(new Point(Game.entities[i].x, Game.entities[i].y));
-				if (distToBarricade < 20) {
+				if (distToBarricade < 32) {
 					Game.entities[i].takeDamage(10);
 					break;
 				}
