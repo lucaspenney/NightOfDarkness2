@@ -138,8 +138,9 @@ GameEngine.prototype.render = function() {
 	ctx.save();
 
 	this.ui.draw();
+	this.screen.update();
 	renderLevel(this.level);
-	Game.screen.scroll();
+
 	this.entities.sort(sortByEntityLayer);
 	for (var i = 0; i < this.entities.length; i++) {
 		if (this.entities[i] !== null) {

@@ -68,19 +68,14 @@ Player.prototype.render = function() {
 		else this.sprite.xOffset = 0;
 	}
 
-	if (this.x > 300 && this.x + 300 < Game.screen.maxXOffset * -1) Game.screen.xOffset = -(this.x - 300);
-	if (this.y > 225 && this.y + 225 < Game.screen.maxYOffset * -1) Game.screen.yOffset = -(this.y - 225);
 
-	if (Game.screen.xOffset > 0) Game.screen.xOffset = 0;
-	if (Game.screen.yOffset > 0) Game.screen.yOffset = 0;
-};
+	if (this.x + 300 <= Game.screen.maxXOffset * -1) Game.screen.setXOffset(-(this.x - 300));
+	else Game.screen.setXOffset((Game.screen.maxXOffset) + (Game.screen.width));
+	if (this.y + 225 <= Game.screen.maxYOffset * -1) Game.screen.setYOffset(-(this.y - 225));
+	else Game.screen.setYOffset((Game.screen.maxYOffset) + (Game.screen.height));
 
-Player.prototype.fire = function() {
-	if (this.gun !== null) {
-		if (new Point(this.x, this.y).getDist(new Point(Game.input.mouse.x - Game.screen.xOffset - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset - Game.screen.yOffset)) > 30) {
-			this.gun.fire();
-		}
-	}
+	if (Game.screen.xOffset > 0) Game.screen.setXOffset(0);
+	if (Game.screen.yOffset > 0) Game.screen.setYOffset(0);
 };
 
 Player.prototype.reloadWeapon = function() {
@@ -127,6 +122,7 @@ Player.prototype.interact = function() {
 
 Player.prototype.use = function() {
 	//Use current inventory item
+
 	if (this.getCurrentEquip() instanceof Gun) {
 		this.inventory.items[this.inventory.selectedItem].fire();
 	} else {

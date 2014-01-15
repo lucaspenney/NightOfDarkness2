@@ -109,6 +109,7 @@ Gun.prototype.drop = function() {
 Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
+		Game.screen.kick(3);
 		if (this.clipAmmo > 0 && !this.reloading) {
 			var x = 6,
 				y = 2;
