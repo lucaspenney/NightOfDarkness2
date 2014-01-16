@@ -15,6 +15,7 @@ function Gun(x, y, type) {
 				this.fireDelay = 0.4;
 				this.ammo = 60;
 				this.power = 30;
+				this.kickAmount = 1;
 				this.clipAmmo = 15;
 				this.clipSize = 15;
 				this.reloadTime = 1.3;
@@ -26,7 +27,8 @@ function Gun(x, y, type) {
 			{
 				this.fireDelay = 0.14;
 				this.ammo = 120;
-				this.power = 15;
+				this.power = 20;
+				this.kickAmount = 2;
 				this.clipAmmo = 40;
 				this.clipSize = 40;
 				this.reloadTime = 1.4;
@@ -36,9 +38,10 @@ function Gun(x, y, type) {
 			}
 		case 'shotgun':
 			{
-				this.fireDelay = 0.6;
+				this.fireDelay = 0.7;
 				this.ammo = 30;
-				this.power = 60;
+				this.power = 40;
+				this.kickAmount = 4;
 				this.clipAmmo = 6;
 				this.clipSize = 6;
 				this.reloadTime = 1.5;
@@ -51,6 +54,7 @@ function Gun(x, y, type) {
 				this.fireDelay = 0.1;
 				this.ammo = 100;
 				this.power = 20;
+				this.kickAmount = 3;
 				this.clipAmmo = 100;
 				this.clipSize = 100;
 				this.reloadTime = 1.8;
@@ -61,8 +65,9 @@ function Gun(x, y, type) {
 		case 'revolver':
 			{
 				this.fireDelay = 0.5;
-				this.ammo = 6;
+				this.ammo = 30;
 				this.power = 50;
+				this.kickAmount = 2;
 				this.clipAmmo = 6;
 				this.clipSize = 6;
 				this.reloadTime = 1.8;
@@ -109,7 +114,6 @@ Gun.prototype.drop = function() {
 Gun.prototype.fire = function() {
 	if (this.owner === null || this.owner === undefined) return;
 	if ((this.lastFire - getCurrentMs()) < -this.fireDelay) {
-		Game.screen.kick(3);
 		if (this.clipAmmo > 0 && !this.reloading) {
 			var x = 6,
 				y = 2;
@@ -140,6 +144,7 @@ Gun.prototype.fire = function() {
 			} else if (this.type == 'machinegun') {
 				Game.sound.playGunSound(Game.sound.guns.machinegun);
 			}
+			Game.screen.kick(this.kickAmount);
 			this.clipAmmo--;
 			this.lastFire = getCurrentMs();
 			if (this.clipAmmo <= 0) {

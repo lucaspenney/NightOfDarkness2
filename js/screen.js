@@ -47,7 +47,7 @@ Screen.prototype.setYOffset = function(y) {
 };
 
 Screen.prototype.addKick = function() {
-	//if (this.xOffset === 0) this.xKick *= -1;
+	if (this.xOffset > -10) this.xKick *= -1;
 	this.xOffset += this.xKick;
 	this.xKick = Math.floor(this.xKick / 2);
 
@@ -57,6 +57,6 @@ Screen.prototype.addKick = function() {
 };
 
 Screen.prototype.kick = function(amount) {
-	this.xKick = amount * -1;
+	this.xKick = amount;
 	this.yKick = amount;
 };

@@ -67,7 +67,7 @@ GameEngine.prototype.start = function() {
 	this.player = new Player();
 	this.ui = new UI();
 	this.screen = new Screen();
-
+	this.playerDead = false;
 };
 GameEngine.prototype.end = function() {
 	this.started = false;

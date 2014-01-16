@@ -17,7 +17,7 @@ function Zombie(x, y) {
 	this.boundingBox = new BoundingBox(this.x, this.y, 16, 16);
 	this.visionBox = new BoundingBox(this.x, this.y, 16, 16);
 	this.vision = random(120, 150);
-	this.health = 50;
+	this.health = 100;
 	this.speed = 1 + (Math.random() * 0.6);
 	this.isDying = false;
 	this.deathTime = 0;
@@ -172,8 +172,8 @@ Zombie.prototype.update = function() {
 	this.move();
 };
 
-Zombie.prototype.hurt = function() {
-	this.health -= 10;
+Zombie.prototype.hurt = function(amount) {
+	this.health -= amount;
 	this.wandering = false;
 	Game.particles.createBloodParticles(this.x, this.y);
 	if (this.health <= 0) {

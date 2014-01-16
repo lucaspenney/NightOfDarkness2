@@ -2,6 +2,7 @@ function Bullet(gun, x, y, power, target) {
 	this.gun = gun;
 	this.x = x;
 	this.y = y;
+	this.power = power;
 	this.lastPos = new Point(this.x, this.y);
 	this.target = target;
 	this.speed = 12;
@@ -40,7 +41,9 @@ Bullet.prototype.update = function() {
 		if (Game.entities[i] instanceof Zombie) {
 			if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.entities[i])) {
 				Game.entities[i].hurt(this.power);
-				Game.deleteEntity(this);
+				console.log(this.power);
+				if (this.power < Math.random() * 100)
+					Game.deleteEntity(this);
 			}
 		}
 	}
