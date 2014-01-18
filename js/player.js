@@ -143,8 +143,14 @@ Player.prototype.move = function(xm, ym) {
 	ym *= 1;
 
 	var canMove = true;
-	for (var x = 0; x < Game.level.width; x++) {
-		for (var y = 0; y < Game.level.height; y++) {
+	var xpos = Math.floor((this.x / 32)) - 3;
+	var ypos = Math.floor((this.y / 32)) - 3;
+	if (xpos < 0) xpos = 0;
+	if (xpos > Game.level.width - 6) xpos = Game.level.width - 6;
+	if (ypos < 0) ypos = 0;
+	if (ypos > Game.level.height - 6) ypos = Game.level.height - 6;
+	for (var y = ypos; y < ypos + 6; y++) {
+		for (var x = xpos; x < xpos + 6; x++) {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(xm, ym, Game.level.tiles[x][y])) {
 					canMove = false;

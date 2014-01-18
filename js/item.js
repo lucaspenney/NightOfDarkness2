@@ -11,6 +11,7 @@ function Item(x, y, type) {
 	this.placementSprite.frameHeight = 32;
 	this.placementSprite.alpha = 0.3;
 	this.placementBox = new BoundingBox(this.x - 16, this.y - 16, 32, 32);
+	this.useTime = 1;
 	switch (type) {
 		case 'healthpack':
 			{
@@ -35,12 +36,12 @@ function Item(x, y, type) {
 		case 'barricade':
 			{
 				this.sprite.xOffset = 64;
+				this.useTime = 2;
 				break;
 			}
 	}
 	this.boundingBox = new BoundingBox(this.x, this.y, 10, 10);
 	this.dropTime = 0;
-	this.useTime = 2;
 	this.useStartTime = 0;
 	this.consumed = false;
 	Game.entities.push(this);
@@ -107,13 +108,18 @@ Item.prototype.render = function() {
 		ctx.fillRect(this.owner.x + Game.screen.xOffset - (this.useTime * 5) - 1, this.owner.y + Game.screen.yOffset + 10, amount, 4);
 	}
 	if (this.type === 'barricade' && this.owner !== null) {
-		if (!this.canPlace()) return;
-		var target = new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset);
-		var x = (target.x - this.owner.x) * 33;
-		var y = (target.y - this.owner.y) * 33;
-		x /= target.getDist(new Point(this.owner.x, this.owner.y));
-		y /= target.getDist(new Point(this.owner.x, this.owner.y));
-		this.placementSprite.renderOnScreen(this.owner.x + x, this.owner.y + y);
+		if (this.owner.getCurrentEquip() === this) {
+			if (!this.canPlace()) {
+				this.useStartTime = 0;
+				return;
+			}
+			var target = new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset);
+			var x = (target.x - this.owner.x) * 33;
+			var y = (target.y - this.owner.y) * 33;
+			x /= target.getDist(new Point(this.owner.x, this.owner.y));
+			y /= target.getDist(new Point(this.owner.x, this.owner.y));
+			this.placementSprite.renderOnScreen(this.owner.x + x, this.owner.y + y);
+		}
 	}
 };
 

@@ -114,16 +114,16 @@ Level.prototype.update = function() {
 	}
 };
 
-function renderLevel(level) {
-	for (var x = 0; x < level.width; x++) { //These ifs check to render tiles only on screen based on pixel values of screen size
+Level.prototype.render = function() {
+	for (var x = 0; x < this.width; x++) { //These ifs check to render tiles only on screen based on pixel values of screen size
 		if (x > (((Game.screen.xOffset + 32 - (Game.screen.xOffset % 32)) / 32) * -1) && x < (((Game.screen.xOffset - 600 - 32 - (Game.screen.xOffset % 32)) / 32) * -1)) {
-			for (var y = 0; y < level.height; y++) {
+			for (var y = 0; y < this.height; y++) {
 				if (y > (((Game.screen.yOffset + 32 - (Game.screen.yOffset % 32)) / 32) * -1) && y < (((Game.screen.yOffset - 450 - 32 - (Game.screen.yOffset % 32)) / 32) * -1))
-					level.tiles[x][y].render();
+					this.tiles[x][y].render();
 			}
 		}
 	}
-}
+};
 
 Level.prototype.start = function() {
 	//TODO: Fade in the level

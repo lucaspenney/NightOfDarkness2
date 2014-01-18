@@ -132,14 +132,8 @@ GameEngine.prototype.render = function() {
 	}
 	if (this.screen === null || this.screen === undefined) return;
 
-	ctx.restore();
-	ctx.fillStyle = "rgba(0, 0, 0)";
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
-	ctx.save();
-
-	this.ui.draw();
 	this.screen.update();
-	renderLevel(this.level);
+	this.level.render();
 
 	this.entities.sort(sortByEntityLayer);
 	for (var i = 0; i < this.entities.length; i++) {
@@ -148,9 +142,8 @@ GameEngine.prototype.render = function() {
 			if (this.inGame) this.entities[i].update();
 		}
 	}
-	this.particles.drawParticles();
 	this.player.render();
-
+	this.particles.drawParticles();
 	this.lighting.render();
 	this.level.drawOverlay();
 	this.ui.draw();

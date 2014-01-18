@@ -15,7 +15,7 @@ function LightingManager() {
 
 LightingManager.prototype.render = function() {
 	if (this.ctx === null || this.ctx === undefined) return;
-
+	if (this.fullbright) return;
 	this.ctx.save();
 	this.ctx.fillStyle = "#000";
 	this.ctx.fillRect(0, 0, lightingCanvas.width, lightingCanvas.height);

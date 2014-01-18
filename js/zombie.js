@@ -65,14 +65,14 @@ Zombie.prototype.move = function() {
 	}
 	var canMovex = true;
 	var canMovey = true;
-	var xpos = Math.floor((this.x / 32)) - 5;
-	var ypos = Math.floor((this.y / 32)) - 5;
+	var xpos = Math.floor((this.x / 32)) - 3;
+	var ypos = Math.floor((this.y / 32)) - 3;
 	if (xpos < 0) xpos = 0;
-	if (xpos > Game.level.width - 10) xpos = Game.level.width - 10;
+	if (xpos > Game.level.width - 6) xpos = Game.level.width - 6;
 	if (ypos < 0) ypos = 0;
-	if (ypos > Game.level.height - 10) ypos = Game.level.height - 10;
-	for (var y = ypos; y < ypos + 10; y++) {
-		for (var x = xpos; x < xpos + 10; x++) {
+	if (ypos > Game.level.height - 6) ypos = Game.level.height - 6;
+	for (var y = ypos; y < ypos + 6; y++) {
+		for (var x = xpos; x < xpos + 6; x++) {
 			if (Game.level.tiles[x][y].solid) {
 				if (this.boundingBox.wouldCollide(this.xv, 0, Game.level.tiles[x][y])) {
 					canMovex = false;
@@ -141,7 +141,7 @@ Zombie.prototype.think = function() {
 	var result = astar.search(graph.nodes, start, end, true); //Set last param to true to include diagonal path, false without
 
 	if (result[0] !== undefined) {
-		var rand = Math.floor(Math.random() * 8);
+		var rand = Math.floor(Math.random() * 8) + 8;
 		this.target = new Point((result[0].x * 32) + rand, (result[0].y * 32) + rand);
 	} else {
 		this.target = new Point(Game.player.x, Game.player.y);
