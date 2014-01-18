@@ -42,7 +42,7 @@ Bullet.prototype.update = function() {
 			if (this.boundingBox.wouldCollide(this.xv, this.yv, Game.entities[i])) {
 				Game.entities[i].hurt(this.power);
 				console.log(this.power);
-				if (this.power < Math.random() * 100)
+				if (this.power < Math.random() * 120)
 					Game.deleteEntity(this);
 			}
 		}

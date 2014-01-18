@@ -5,6 +5,12 @@ function Item(x, y, type) {
 	this.pickedUp = false;
 	this.owner = null;
 	this.sprite = new Sprite("images/items.png");
+	this.placementSprite = new Sprite("images/barricade_placed.png");
+	this.placementSprite.xOffset = 0;
+	this.placementSprite.frameWidth = 32;
+	this.placementSprite.frameHeight = 32;
+	this.placementSprite.alpha = 0.3;
+	this.placementBox = new BoundingBox(this.x - 16, this.y - 16, 32, 32);
 	switch (type) {
 		case 'healthpack':
 			{
@@ -41,6 +47,9 @@ function Item(x, y, type) {
 }
 
 Item.prototype.use = function() {
+	if (this.type === 'barricade') {
+		if (!this.canPlace()) return;
+	}
 	if (this.useStartTime === 0) this.useStartTime = getCurrentMs();
 	if (this.useStartTime - getCurrentMs() < -this.useTime) {
 		switch (this.type) {
@@ -97,6 +106,41 @@ Item.prototype.render = function() {
 		ctx.fillStyle = "#0C0";
 		ctx.fillRect(this.owner.x + Game.screen.xOffset - (this.useTime * 5) - 1, this.owner.y + Game.screen.yOffset + 10, amount, 4);
 	}
+	if (this.type === 'barricade' && this.owner !== null) {
+		if (!this.canPlace()) return;
+		var target = new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset);
+		var x = (target.x - this.owner.x) * 33;
+		var y = (target.y - this.owner.y) * 33;
+		x /= target.getDist(new Point(this.owner.x, this.owner.y));
+		y /= target.getDist(new Point(this.owner.x, this.owner.y));
+		this.placementSprite.renderOnScreen(this.owner.x + x, this.owner.y + y);
+	}
+};
+
+Item.prototype.canPlace = function() {
+	var target = new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset);
+	var x = (target.x - this.owner.x) * 33;
+	var y = (target.y - this.owner.y) * 33;
+	x /= target.getDist(new Point(this.owner.x, this.owner.y));
+	y /= target.getDist(new Point(this.owner.x, this.owner.y));
+	this.placementBox.x = this.owner.x + x - 16;
+	this.placementBox.y = this.owner.y + y - 16;
+	var xpos = Math.floor((this.owner.x / 32)) - 2;
+	var ypos = Math.floor((this.owner.y / 32)) - 2;
+	if (xpos < 0) xpos = 0;
+	if (xpos > Game.level.width - 4) xpos = Game.level.width - 4;
+	if (ypos < 0) ypos = 0;
+	if (ypos > Game.level.height - 4) ypos = Game.level.height - 4;
+	for (var y = ypos; y < ypos + 4; y++) {
+		for (var x = xpos; x < xpos + 4; x++) {
+			if (Game.level.tiles[x][y].solid) {
+				if (this.placementBox.isColliding(Game.level.tiles[x][y])) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
 };
 
 Item.prototype.update = function() {
