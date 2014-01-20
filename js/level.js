@@ -17,6 +17,7 @@ function Level(num) {
 	this.isFading = false;
 	this.levelTime = 0;
 	this.lastUpdate = 0;
+	this.waves = new WaveManager();
 
 	for (var x = 0; x < this.width; x++) {
 		this.tiles[x] = [];
@@ -111,6 +112,7 @@ Level.prototype.update = function() {
 	if (getCurrentMs() - this.lastUpdate > 1) {
 		this.levelTime++;
 		this.lastUpdate = getCurrentMs();
+		this.waves.tick();
 	}
 };
 
