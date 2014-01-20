@@ -41,10 +41,13 @@ UI.prototype.drawLoadingScreen = function() {
 
 UI.prototype.drawStats = function(x, y) {
 	ctx.textAlign = 'left';
-	ctx.font = 'normal 16px arial';
 	ctx.fillStyle = "#FFF";
-	ctx.fillText("Kills: " + Game.player.kills, x, y);
-	ctx.fillText("Time: " + Game.level.levelTime, x, y + 20);
+	ctx.font = 'normal 18px Georgia';
+
+	if (Game.level.waves.waitTime > 0) {
+		ctx.textAlign = 'center';
+		ctx.fillText("Wave " + (Game.level.waves.currentWave + 1), Game.width / 2, Game.height / 5);
+	}
 };
 
 UI.prototype.drawFlashlight = function(x, y) {
