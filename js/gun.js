@@ -119,7 +119,9 @@ Gun.prototype.fire = function() {
 				y = 2;
 			var x2 = x * Math.cos(degToRad(this.owner.rotation)) + y * Math.sin(degToRad(this.owner.rotation));
 			var y2 = x * Math.sin(degToRad(this.owner.rotation)) - y * Math.cos(degToRad(this.owner.rotation));
-			if (this.owner instanceof Player) new Bullet(this, this.owner.x + x2, this.owner.y + y2, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
+			var dest = Raytrace(new Point(this.owner.x, this.owner.y), new Point(Game.input.mouse.x - Game.screen.xOffset, Game.input.mouse.y - Game.screen.yOffset));
+			if (this.owner instanceof Player)
+				new Bullet(this, this.owner.x + x2, this.owner.y + y2, this.power, dest);
 			//else if (this.owner instanceof Npc) new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x, this.owner.target.y));
 			if (this.type == 'shotgun') {
 				var r1 = (Math.random() * 50) - 30;
@@ -127,13 +129,9 @@ Gun.prototype.fire = function() {
 				r1 = 10; //Non-random shotgun bullet distribution
 				r2 = -10;
 				if (this.owner instanceof Player) {
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r1, Game.input.mouse.y - Game.screen.yOffset + r1));
-					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(Game.input.mouse.x - Game.screen.xOffset + r2, Game.input.mouse.y - Game.screen.yOffset + r2));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(dest.x + r2, dest.y + r1));
+					new Bullet(this, this.owner.x, this.owner.y, this.power, new Point(dest.x + r1, dest.y + r2));
 				}
-				//else if (this.owner instanceof Npc) {
-				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r1, this.owner.target.y+r1));
-				//	new Bullet(this, this.owner.x,this.owner.y,this.power, new Point(this.owner.target.x+r2, this.owner.target.y+r2));
-				//}
 				Game.sound.playGunSound(Game.sound.guns.shotgun);
 			} else if (this.type == 'pistol') {
 				Game.sound.playGunSound(Game.sound.guns.pistol);
