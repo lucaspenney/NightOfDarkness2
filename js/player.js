@@ -47,15 +47,12 @@ Player.prototype.update = function() {
 };
 
 Player.prototype.render = function() {
-	this.rotation = Math.atan2(this.y + Game.screen.yOffset - (this.height / 2) - Game.input.mouse.y, this.x + Game.screen.xOffset - (this.width / 2) - Game.input.mouse.x) * (180 / Math.PI);
+	this.rotation = Math.atan2(this.y + Game.screen.yOffset - Game.input.mouse.y, this.x + Game.screen.xOffset - Game.input.mouse.x) * (180 / Math.PI);
 	if (this.rotation < 0) {
 		this.rotation += 360;
 	}
 	this.rotation -= 90;
 	this.sprite.rotation = this.rotation;
-	if (this.sprite.rotation > -30 && this.sprite.rotation < 90) {
-		this.sprite.rotation -= 5;
-	}
 	this.sprite.renderOnScreen(this.x, this.y);
 
 	this.sprite.xOffset = 0;
