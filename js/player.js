@@ -165,5 +165,6 @@ Player.prototype.move = function(xm, ym) {
 	if (canMove) {
 		this.x += xm;
 		this.y += ym;
+		Game.sound.footstepSound.play();
 	}
 };

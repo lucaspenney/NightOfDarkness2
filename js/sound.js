@@ -18,6 +18,11 @@ function SoundManager() {
 		drop: 6,
 		reload: 7
 	};
+	this.footstepSound = AudioFX('sounds/footstep', {
+		formats: ['wav'],
+		pool: 1,
+		volume: 0.2
+	});
 
 	if (AudioFX.supported) {
 		this.gunSounds[this.guns.pistol] = AudioFX('sounds/gunshot3', {
