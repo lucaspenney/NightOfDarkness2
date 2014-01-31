@@ -23,6 +23,11 @@ function SoundManager() {
 		pool: 1,
 		volume: 0.2
 	});
+	this.itemPickUp = AudioFX('sounds/itempickup', {
+		formats: ['wav'],
+		pool: 2,
+		volume: 0.2
+	});
 
 	if (AudioFX.supported) {
 		this.gunSounds[this.guns.pistol] = AudioFX('sounds/gunshot3', {

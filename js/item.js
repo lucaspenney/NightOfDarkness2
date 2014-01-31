@@ -93,6 +93,7 @@ Item.prototype.pickUp = function(owner) {
 		if (owner.inventory.addItem(this)) {
 			this.owner = owner;
 			this.pickedUp = true;
+			Game.sound.itemPickUp.play();
 		}
 	}
 };
