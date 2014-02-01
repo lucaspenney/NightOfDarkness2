@@ -8,8 +8,8 @@ var Game = null;
 //HTML onLoad event - Loading the game
 $(document).ready(function() {
 	canvas = document.getElementById('canvas');
-	canvas.width = 600 * 4;
-	canvas.height = 450 * 4;
+	canvas.width = 600 * 2;
+	canvas.height = 450 * 2;
 
 	//check whether browser supports getting canvas context
 	if (canvas && canvas.getContext) {
@@ -22,7 +22,7 @@ $(document).ready(function() {
 		ctx.mozImageSmoothingEnabled = false;
 		ctx.imageSmoothingEnabled = false;
 	}
-	ctx.scale(4, 4);
+	ctx.scale(2, 2);
 
 	Game = new GameEngine(600, 450);
 	Game.loader.load();

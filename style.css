@@ -14,7 +14,7 @@ canvas {
 	width:600px;
 	height:450px;
 	image-rendering: optimizeSpeed;
-	cursor:url('images/crosshair.png');
+	cursor:url(images/crosshair.png),auto;
 	padding: 0;
 	margin: 0;
 }
