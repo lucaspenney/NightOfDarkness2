@@ -3,7 +3,7 @@ function WaveManager() {
 	this.currentWaveTime = 0;
 	this.waitTime = 5;
 	this.waves = [];
-	for (var i = 0; i < 10; i++) {
+	for (var i = 0; i < 20; i++) {
 		var enemies = (i * 5) + 5;
 		this.waves[i] = new Wave(this, enemies);
 	}
@@ -11,6 +11,7 @@ function WaveManager() {
 
 WaveManager.prototype.startWave = function(wave) {
 	if (wave <= this.waves.length - 1) {
+		Game.sound.waveSound.play();
 		this.currentWave = wave;
 		console.log("Wave " + this.currentWave + " started");
 	}

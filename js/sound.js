@@ -6,8 +6,19 @@ function SoundManager() {
 	this.zombieSounds = [];
 	this.hurtSounds = [];
 	this.gunSounds = [];
-
 	this.totalAssets = 29;
+	this.backgroundMusic = AudioFX('sounds/background', {
+		formats: ['wav'],
+		pool: 1,
+		volume: 0.1,
+		loop: true
+	});
+	this.waveSound = AudioFX('sounds/creepybreath', {
+		formats: ['wav'],
+		pool: 2,
+		volume: 0.2,
+	});
+
 	this.guns = {
 		pistol: 0,
 		shotgun: 1,
@@ -69,12 +80,6 @@ function SoundManager() {
 			formats: ['wav'],
 			pool: 3,
 			volume: 0.5
-		});
-		this.ambience1 = AudioFX('sounds/eerie_loop', {
-			formats: ['wav'],
-			volume: 0,
-			autoplay: false,
-			loop: true
 		});
 		this.load();
 	} else console.log("Browser does not support AudioFX (likely html5 audio unsupported)");

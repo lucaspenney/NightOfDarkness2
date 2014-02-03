@@ -132,7 +132,7 @@ Level.prototype.start = function() {
 };
 
 Level.prototype.fadeIn = function() {
-	//ambience1.play();
+	Game.sound.backgroundMusic.play();
 	this.overlayAlpha = 1;
 	this.isFading = true;
 	this.fadeStep = 0;
@@ -140,7 +140,7 @@ Level.prototype.fadeIn = function() {
 };
 
 Level.prototype.fadeOut = function() {
-	Game.sound.ambience1.stop();
+	Game.sound.backgroundMusic.stop();
 	this.overlayAlpha = 0;
 	this.isFading = true;
 	this.fadeStep = 0;
