@@ -90,8 +90,8 @@ $("#canvas").mouseup(function(event) {
 
 //Mouse movement
 $('#canvas').mousemove(function(e) {
-	Game.input.mouse.x = e.pageX - this.offsetLeft;
-	Game.input.mouse.y = e.pageY - this.offsetTop;
+	Game.input.mouse.x = e.pageX - this.offsetLeft + 15;
+	Game.input.mouse.y = e.pageY - this.offsetTop + 15;
 	if (Game === null) return;
 	if (Game.screen !== null) {
 		//mouse.x += screen.xOffset;
