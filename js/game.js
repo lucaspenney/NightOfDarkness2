@@ -44,8 +44,7 @@ function GameEngine(width, height) {
 	this.input = new InputManager();
 	this.currentLevel = 1;
 	this.inGame = true; //Are we physically in the game level
-	this.mainMenu = new MainMenu(this);
-	this.inMenu = true;
+	this.mainMenu = new MainMenu();
 	this.loaded = false;
 	this.playerDead = false;
 	this.entities = [];
@@ -61,7 +60,7 @@ GameEngine.prototype.toggleParticles = function() {
 GameEngine.prototype.start = function() {
 	this.started = true;
 	this.inGame = true;
-	this.inMenu = false;
+	this.mainMenu.inMenu = false;
 	this.level = new Level(this.currentLevel);
 	this.level.fadeIn();
 	this.player = new Player();
@@ -72,7 +71,7 @@ GameEngine.prototype.start = function() {
 GameEngine.prototype.end = function() {
 	this.started = false;
 	this.level = null;
-	this.inMenu = true;
+	this.mainMenu.inMenu = true;
 	this.entities = [];
 	this.player = null;
 	this.screen = null;
@@ -123,11 +122,12 @@ GameEngine.prototype.render = function() {
 		this.ui.drawLoadingScreen();
 		if (this.loader.getLoadPercent() == 100) {
 			this.loaded = true;
-			this.inMenu = true;
+			this.mainMenu.init();
 			return;
 		}
-	} else if (this.inMenu) {
+	} else if (this.mainMenu.inMenu) {
 		this.mainMenu.render();
+		this.mainMenu.update();
 		return; //Don't draw the game if we're not in it yet.
 	}
 	if (this.screen === null || this.screen === undefined) return;

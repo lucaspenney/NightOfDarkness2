@@ -29,7 +29,7 @@ function Sprite(img, useFullImg) {
 }
 
 Sprite.prototype.render = function(x, y) {
-	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.width, this.height, x, y, this.width * this.scale, this.width * this.scale);
+	ctx.drawImage(this.img, this.xOffset, this.yOffset, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
 };
 Sprite.prototype.renderOnScreen = function(x, y) {
 	if (!this.loaded) return;

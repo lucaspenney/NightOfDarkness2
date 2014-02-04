@@ -102,5 +102,4 @@ $('#canvas').mousemove(function(e) {
 //Mouse clicks hook
 $("#canvas").click(function(e) {
 	window.focus();
-	if (Game.inMenu) Game.mainMenu.handleInput();
 });
