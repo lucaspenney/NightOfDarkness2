@@ -2,7 +2,8 @@ function Item(x, y, type) {
 	this.x = x;
 	this.y = y;
 	this.type = type;
-	this.pickedUp = false;
+	this.name = type;
+	this.displayName = '';
 	this.owner = null;
 	this.sprite = new Sprite("images/items.png");
 	this.placementSprite = new Sprite("images/barricade_placed.png");
@@ -16,27 +17,26 @@ function Item(x, y, type) {
 		case 'healthpack':
 			{
 				this.sprite.xOffset = 48;
+				this.displayName = "Medkit";
 				break;
 			}
 		case 'ammopack':
 			{
 				this.sprite.xOffset = 32;
+				this.displayName = "Ammo Pack";
 				break;
 			}
 		case 'batterypack':
 			{
 				this.sprite.xOffset = 16;
-				break;
-			}
-		case 'flashlight':
-			{
-				this.sprite.xOffset = 0;
+				this.displayName = "Battery";
 				break;
 			}
 		case 'barricade':
 			{
 				this.sprite.xOffset = 64;
 				this.useTime = 2;
+				this.displayName = "Barricade";
 				break;
 			}
 	}
@@ -56,18 +56,22 @@ Item.prototype.use = function() {
 		switch (this.type) {
 			case 'healthpack':
 				{
-					Game.player.health += 25;
+					Game.player.health += 30;
 					if (Game.player.health > 100) Game.player.health = 100;
 					break;
 				}
 			case 'ammopack':
 				{
-					if (Game.player.gun instanceof Gun) Game.player.gun.ammo += Game.player.gun.clipSize * 4;
+					for (var i = 0; i < Game.player.inventory.items.length; i++) {
+						if (Game.player.inventory.items[i] instanceof Gun) {
+							Game.player.inventory.items[i].ammo += Game.player.inventory.items[i].ammo = Game.player.inventory.items[i].clipSize * 2;
+						}
+					}
 					break;
 				}
 			case 'batterypack':
 				{
-					Game.player.batteryPower += 50;
+					Game.player.batteryPower += 60;
 					if (Game.player.batteryPower > 100) Game.player.batteryPower = 100;
 					break;
 				}

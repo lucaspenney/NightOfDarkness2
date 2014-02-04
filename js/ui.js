@@ -104,13 +104,13 @@ UI.prototype.drawGun = function(x, y) {
 		gunclipmax = Game.player.getCurrentEquip().clipSize;
 	} else if (Game.player.getCurrentEquip() instanceof Item) {
 		//
-		gunname = "Item";
+		gunname = Game.player.getCurrentEquip().displayName;
 		gunammo = 1;
-		gunclipammo = 0;
-		gunclipmax = 0;
+		gunclipammo = 1;
+		gunclipmax = 1;
 	} else {
 		gunname = "Unarmed";
-		gunammo = 1;
+		gunammo = 0;
 		gunclipammo = 0;
 		gunclipmax = 0;
 	}
