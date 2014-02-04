@@ -3,7 +3,7 @@ function Flare(x, y) {
 	this.y = y;
 	this.layer = 0;
 	this.sprite = new Sprite("images/flare.png", true);
-	new Light(this.x, this.y);
+	new Light(this.x - 16, this.y - 16);
 	Game.entities.push(this);
 }
 

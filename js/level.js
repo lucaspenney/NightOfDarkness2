@@ -92,16 +92,7 @@ function Level(num) {
 					new ItemSpawn(x * 32, y * 32);
 					break;
 				case 21:
-					new Npc(x * 32 + 16, y * 32 + 16, 1);
-					break;
-				case 22:
-					new Npc(x * 32 + 16, y * 32 + 16, 2);
-					break;
-				case 23:
-					new Npc(x * 32 + 16, y * 32 + 16, 3);
-					break;
-				case 24:
-					new Npc(x * 32 + 16, y * 32 + 16, 4);
+					new GunSpawn(x * 32, y * 32);
 					break;
 			}
 		}
