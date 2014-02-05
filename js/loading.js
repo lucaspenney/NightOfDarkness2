@@ -10,6 +10,7 @@ function AssetLoader() {
 		"images/items.png",
 		"images/muzzleflash.png",
 		"images/player.png",
+		"images/barricade_placed.png",
 		"images/zombie.png",
 		"images/flashlight.png",
 		"images/pistol.png",
@@ -18,23 +19,23 @@ function AssetLoader() {
 		"images/machinegun.png",
 		"images/revolver.png",
 		"images/flare.png",
-
+		"images/blood.png",
 	];
 	this.assetsLoaded = 0;
 	this.totalAssets = 1;
 }
 
 AssetLoader.prototype.load = function() {
-	this.totalAssets = 55;
+	this.totalAssets = this.assets.length + 40;
 	var _this = this;
+	var onload = function() {
+		_this.assetsLoaded++;
+	};
 	for (var i = 0; i < this.assets.length; i++) {
 		if (this.assets[i].indexOf(".png" != -1)) {
 			var img = new Image();
 			img.src = this.assets[i];
-			img.onload = function() {
-				_this.assetsLoaded++;
-				console.log("Assets loaded:" + _this.assetsLoaded);
-			};
+			img.onload = onload;
 		}
 	}
 };

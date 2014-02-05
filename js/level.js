@@ -124,6 +124,7 @@ Level.prototype.start = function() {
 
 Level.prototype.fadeIn = function() {
 	Game.sound.backgroundMusic.play();
+	Game.sound.waveSound.play();
 	this.overlayAlpha = 1;
 	this.isFading = true;
 	this.fadeStep = 0;

@@ -165,16 +165,6 @@ Gun.prototype.update = function() {
 	if (!this.pickedUp) {
 		if (this.boundingBox.isColliding(Game.player) && Game.player.gun === null) {
 			this.pickUp(Game.player);
-		} else {
-			for (var i = 0; i < Game.entities.length; i++) {
-				if (Game.entities[i] instanceof Npc) {
-					if (Game.entities[i].gun === null) {
-						if (this.boundingBox.isColliding(Game.entities[i])) {
-							this.pickUp(Game.entities[i]);
-						}
-					}
-				}
-			}
 		}
 	}
 	if (this.reloading) {

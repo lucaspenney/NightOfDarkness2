@@ -89,7 +89,7 @@ Zombie.prototype.move = function() {
 	}
 
 	for (var i = 0; i < Game.entities.length; i++) {
-		if ((Game.entities[i] instanceof Player || Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Npc || Game.entities[i] instanceof Barricade) && Game.entities[i] !== this) {
+		if ((Game.entities[i] instanceof Player || Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Barricade) && Game.entities[i] !== this) {
 			if (this.boundingBox.wouldCollide(this.xv, 0, Game.entities[i])) {
 				canMovex = false;
 			}

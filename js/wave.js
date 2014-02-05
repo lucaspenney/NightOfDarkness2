@@ -13,7 +13,6 @@ WaveManager.prototype.startWave = function(wave) {
 	if (wave <= this.waves.length - 1) {
 		Game.sound.waveSound.play();
 		this.currentWave = wave;
-		console.log("Wave " + this.currentWave + " started");
 	}
 	this.waitTime = 5;
 };
