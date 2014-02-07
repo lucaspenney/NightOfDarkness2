@@ -84,10 +84,11 @@ Player.prototype.reloadWeapon = function() {
 
 Player.prototype.toggleFlashlight = function() {
 	if (this.hasFlashlight) {
-		if ((this.lastFlashlightToggle - getCurrentMs()) < -0.2) {
+		if ((this.lastFlashlightToggle - getCurrentMs()) < -0.3) {
 			if (this.flashlight) this.flashlight = false;
 			else if (this.batteryPower > 0) this.flashlight = true;
 			this.lastFlashlightToggle = getCurrentMs();
+			Game.sound.flashlight.play();
 		}
 	} else this.flashlight = false;
 };

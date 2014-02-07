@@ -103,6 +103,11 @@ SoundManager.prototype.load = function() {
 		pool: 2,
 		volume: 0.2
 	}, onload);
+	this.flashlight = AudioFX('sounds/flashlight', {
+		formats: ['wav'],
+		pool: 2,
+		volume: 0.3
+	}, onload);
 };
 
 SoundManager.prototype.playZombieSound = function(hurt) {
