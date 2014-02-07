@@ -13,12 +13,13 @@ function Gun(x, y, type) {
 		case 'pistol':
 			{
 				this.fireDelay = 0.4;
+				this.maxAmmo = 60;
 				this.ammo = 60;
 				this.power = 30;
 				this.kickAmount = 1;
 				this.clipAmmo = 15;
 				this.clipSize = 15;
-				this.reloadTime = 1.3;
+				this.reloadTime = 1.2;
 				this.displayName = "Pistol";
 				this.sprite = new Sprite('images/pistol.png', true);
 				break;
@@ -26,8 +27,9 @@ function Gun(x, y, type) {
 		case 'smg':
 			{
 				this.fireDelay = 0.14;
+				this.maxAmmo = 120;
 				this.ammo = 120;
-				this.power = 20;
+				this.power = 25;
 				this.kickAmount = 2;
 				this.clipAmmo = 40;
 				this.clipSize = 40;
@@ -39,11 +41,12 @@ function Gun(x, y, type) {
 		case 'shotgun':
 			{
 				this.fireDelay = 0.7;
-				this.ammo = 30;
+				this.maxAmmo = 32;
+				this.ammo = 32;
 				this.power = 40;
 				this.kickAmount = 4;
-				this.clipAmmo = 6;
-				this.clipSize = 6;
+				this.clipAmmo = 8;
+				this.clipSize = 8;
 				this.reloadTime = 1.5;
 				this.displayName = "Shotgun";
 				this.sprite = new Sprite('images/shotgun.png', true);
@@ -52,6 +55,7 @@ function Gun(x, y, type) {
 		case 'machinegun':
 			{
 				this.fireDelay = 0.1;
+				this.maxAmmo = 100;
 				this.ammo = 100;
 				this.power = 20;
 				this.kickAmount = 3;
@@ -65,8 +69,9 @@ function Gun(x, y, type) {
 		case 'revolver':
 			{
 				this.fireDelay = 0.5;
+				this.maxAmmo = 30;
 				this.ammo = 30;
-				this.power = 50;
+				this.power = 60;
 				this.kickAmount = 2;
 				this.clipAmmo = 6;
 				this.clipSize = 6;

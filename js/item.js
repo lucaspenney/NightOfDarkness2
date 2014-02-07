@@ -35,7 +35,7 @@ function Item(x, y, type) {
 		case 'barricade':
 			{
 				this.sprite.xOffset = 64;
-				this.useTime = 2;
+				this.useTime = 1.75;
 				this.displayName = "Barricade";
 				break;
 			}
@@ -64,7 +64,8 @@ Item.prototype.use = function() {
 				{
 					for (var i = 0; i < Game.player.inventory.items.length; i++) {
 						if (Game.player.inventory.items[i] instanceof Gun) {
-							Game.player.inventory.items[i].ammo += Game.player.inventory.items[i].ammo = Game.player.inventory.items[i].clipSize * 2;
+							Game.player.inventory.items[i].ammo = Game.player.inventory.items[i].maxAmmo;
+							Game.player.inventory.items[i].clipAmmo = Game.player.inventory.items[i].clipSize;
 						}
 					}
 					break;
@@ -148,6 +149,13 @@ Item.prototype.canPlace = function() {
 				if (this.placementBox.isColliding(Game.level.tiles[x][y])) {
 					return false;
 				}
+			}
+		}
+	}
+	for (var i = 0; i < Game.entities.length; i++) {
+		if (Game.entities[i] instanceof Zombie || Game.entities[i] instanceof Item || Game.entities[i] instanceof Gun || Game.entities[i] instanceof Barricade) {
+			if (this.placementBox.isColliding(Game.entities[i])) {
+				return false;
 			}
 		}
 	}

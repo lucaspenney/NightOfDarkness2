@@ -10,8 +10,8 @@ function Barricade(x, y) {
 	this.yv /= target.getDist(new Point(this.x, this.y));
 	this.x += this.xv;
 	this.y += this.yv;
-	this.health = 100;
-	this.maxHealth = 100;
+	this.health = 150;
+	this.maxHealth = 150;
 	this.sprite = new Sprite("images/barricade_placed.png", false);
 	this.sprite.xOffset = 0;
 	this.sprite.frameWidth = 32;
