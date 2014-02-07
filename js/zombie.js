@@ -27,7 +27,7 @@ function Zombie(x, y) {
 }
 
 Zombie.prototype.render = function() {
-	if (this.target !== null) {
+	if (this.target !== null && !this.isDying) {
 		this.rotation = Math.atan2(this.y - Game.player.y, this.x - Game.player.x) * (180 / Math.PI);
 		if (this.rotation < 0) {
 			this.rotation += 360;
@@ -36,7 +36,7 @@ Zombie.prototype.render = function() {
 	}
 	this.sprite.rotation = this.rotation;
 	if (this.isDying) {
-		this.rotation = this.deathRotation;
+		this.sprite.rotation = this.deathRotation;
 		this.sprite.xOffset = 16;
 	} else this.sprite.xOffset = 0;
 

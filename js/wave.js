@@ -3,8 +3,8 @@ function WaveManager() {
 	this.currentWaveTime = 0;
 	this.waitTime = 5;
 	this.waves = [];
-	for (var i = 0; i < 20; i++) {
-		var enemies = (i * 5) + 5;
+	for (var i = 0; i < 15; i++) {
+		var enemies = (i * 5) + 8;
 		this.waves[i] = new Wave(this, enemies);
 	}
 }
@@ -31,23 +31,25 @@ function Wave(manager, enemies, params) {
 }
 
 Wave.prototype.update = function() {
+	var zCount = 0;
+	for (var i = 0; i < Game.entities.length; i++) {
+		if (Game.entities[i] instanceof Zombie) {
+			zCount++;
+		}
+	}
 	if (this.spawns < this.enemies) {
-		for (var i = 0; i < Game.entities.length; i++) {
-			if (Game.entities[i] instanceof ZombieSpawner) {
-				if (Game.entities[i].canSpawn()) {
-					Game.entities[i].spawn();
-					this.spawns++;
-					if (this.spawns >= this.enemies) return;
+		if (zCount < 15 + this.manager.currentWave) {
+			for (var i = 0; i < Game.entities.length; i++) {
+				if (Game.entities[i] instanceof ZombieSpawner) {
+					if (Game.entities[i].canSpawn()) {
+						Game.entities[i].spawn();
+						this.spawns++;
+						if (this.spawns >= this.enemies) return;
+					}
 				}
 			}
 		}
 	} else {
-		var zCount = 0;
-		for (var i = 0; i < Game.entities.length; i++) {
-			if (Game.entities[i] instanceof Zombie) {
-				zCount++;
-			}
-		}
 		if (zCount <= 0)
 			this.manager.startWave(this.manager.currentWave + 1);
 	}
