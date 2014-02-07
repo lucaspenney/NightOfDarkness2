@@ -27,16 +27,19 @@ module.exports = function(grunt) {
 		copy: {
 			build: {
 				files: [{
-					src: 'images/*',
-					dest: 'build/images/'
+					src: 'images/**',
+					dest: 'build/'
 				}, {
-					src: 'sounds/*',
-					dest: 'build/sounds/'
+					src: 'sounds/**',
+					dest: 'build/'
 				}, {
 					src: 'maps/*',
-					dest: 'build/maps/'
+					dest: 'build/'
 				}, {
 					src: 'game.html',
+					dest: 'build/'
+				}, {
+					src: 'style.css',
 					dest: 'build/'
 				}]
 			}
