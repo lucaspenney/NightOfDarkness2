@@ -1,5 +1,5 @@
 module.exports = function(grunt) {
-
+	
 	// Project configuration.
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -13,6 +13,20 @@ module.exports = function(grunt) {
 			compile: {
 				src: 'js/*',
 				dest: 'compiled.js'
+			},
+			maps: {
+				src: ['maps/*.tmx'],
+				dest: 'js/maps.js',
+			},
+		},
+		replace: {
+			maps: {
+				src: ['js/maps.js'],
+				dest: 'js/maps.js',
+				replacements: [{
+					from: /<map(.*?)<\/map>/g,
+					to: 'var maps = maps || {}; maps["$1"] = "<map$1</map>";'
+				}]
 			}
 		},
 		uglify: {
@@ -45,12 +59,15 @@ module.exports = function(grunt) {
 			}
 		}
 	});
-
+	
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-text-replace');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-copy');
-
+	
+	
 	grunt.registerTask('default', ['concat']);
-	grunt.registerTask('build', ['copy:build', 'uglify:build']);
+	
+	grunt.registerTask('build', ['concat', 'replace', 'copy:build']);
 };

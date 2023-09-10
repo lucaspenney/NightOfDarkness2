@@ -23,7 +23,17 @@ LightingManager.prototype.render = function() {
 
 
 	this.ctx.globalCompositeOperation = 'destination-out';
-	var radgrad = this.ctx.createRadialGradient(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 20, Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300);
+	var playerX = parseFloat(Game.player.x);
+	var playerY = parseFloat(Game.player.y);
+	var screenXOffset = parseFloat(Game.screen.xOffset);
+	var screenYOffset = parseFloat(Game.screen.yOffset);
+	//fix any infinite values to 0
+	if (isNaN(playerX)) playerX = 0;
+	if (isNaN(playerY)) playerY = 0;
+	if (isNaN(screenXOffset)) screenXOffset = 0;
+	if (isNaN(screenYOffset)) screenYOffset = 0;
+
+	var radgrad = this.ctx.createRadialGradient(playerX + screenXOffset, playerY + screenYOffset, 20, playerX + screenXOffset, playerY + screenYOffset, 300);
 	if (Game.player.flashlight) {
 		radgrad.addColorStop(0, "rgba(0, 0, 0, 1)");
 		radgrad.addColorStop(0.1, "rgba(0, 0, 0, 0.3)");
@@ -40,6 +50,7 @@ LightingManager.prototype.render = function() {
 	this.ctx.beginPath();
 	this.ctx.arc(Game.player.x + Game.screen.xOffset, Game.player.y + Game.screen.yOffset, 300, 0, 2 * Math.PI, false);
 	this.ctx.fill();
+	
 
 	if (Game.player.flashlight) {
 		this.ctx.save();
